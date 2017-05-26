@@ -62,7 +62,9 @@
             infodiv.style.position = 'fixed';
             infodiv.style.bottom = '0px';
             infodiv.style.right = '0px';
-            var txt = document.createTextNode("wasd: roll-n-pitch, qe: yaw, zxcv: throttle, space: camera");
+            infodiv.style.border = "thick solid #9999FF";
+            infodiv.style.fontSize = "xx-large";
+            var txt = document.createTextNode("Controls - wasd: roll-n-pitch, qe: yaw, zxcv: throttle, space: camera");
             infodiv.appendChild(txt);
             document.body.appendChild(infodiv);
 
