@@ -1,0 +1,214 @@
+<html>
+
+<head>
+    <title>Quadcopter Simulator</title>
+</head>
+
+<body>
+    <script type="text/javascript" src="javascripts/stats.min.js"></script>
+    <script type="text/javascript" src="javascripts/three.min.js"></script>
+    <script type="text/javascript" src="javascripts/physi.min.js"></script>
+    <script type="text/javascript" src="javascripts/dat.gui.min.js"></script>
+    <script type="text/javascript" src="javascripts/orbitcontrols.js"></script>
+    <script type="text/javascript" src="javascripts/THREEx.KeyboardState.js"></script>
+    <script type="text/javascript">
+        var renderer, gui, stats, scene, camera, cameraOnQuad;
+        var controls, keyboard, sun_light, grass_field, grass_field_physijs, quadcopter;
+        var tmpQuaternion = new THREE.Quaternion();
+        var loading_manager = new THREE.LoadingManager();
+        var loader = new THREE.JSONLoader(loading_manager);
+        var physics_framerate = 1000 / 30.0;
+        //- var yaw_velocity=0;
+        //- var roll_velocity=0;
+        //- var pitch_velocity=0;
+        init_scene();
+        add_quadcopter();
+
+        // add a reference object to see
+        var reference_obj = new physijs.Box(new THREE.BoxGeometry(20, 500, 20), new THREE.MeshNormalMaterial(), { mass: 0.0 });
+        reference_obj.position.set(1000, 250, 0);
+        scene.add(reference_obj);
+        // apply physics
+        onStep(0);
+
+
+        // functions
+        function init_scene() {
+            setup_renderer_scene_and_camera();
+
+            // let there be light
+            sun_light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1.0);
+            scene.add(sun_light);
+
+            // and some grass
+            add_grass_field();
+
+            // controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            keyboard = new THREEx.KeyboardState();
+
+            // control and monitoring for few params
+            gui = new dat.GUI();
+
+            // fps statistics
+            stats = new Stats();
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.top = '0px';
+            stats.domElement.style.zIndex = 2;
+            document.body.appendChild(stats.domElement);
+
+            // show keyboard controls info
+        }
+
+        function setup_renderer_scene_and_camera() {
+            renderer = new THREE.WebGLRenderer({ antialias: false });
+            renderer.setClearColor(new THREE.Color(0x87ceeb));
+            renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
+            document.body.appendChild(renderer.domElement);
+            cameraOnQuad = false;
+            scene = new physijs.Scene('javascripts/physijs-worker.min.js', { gravity: new THREE.Vector3(0, -40, 0) });
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
+            camera.position.set(500, 50, 0);
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+        }
+
+        function add_grass_field() {
+            var grass_texmap = THREE.ImageUtils.loadTexture('images/grass/grass01.jpg');
+            var grass_dismap = THREE.ImageUtils.loadTexture('images/grass/grass01_h.jpg');
+            var grass_normap = THREE.ImageUtils.loadTexture('images/grass/grass01_n.jpg');
+            grass_texmap.wrapS = grass_texmap.wrapT = grass_normap.wrapS = grass_normap.wrapT = grass_dismap.wrapS = grass_dismap.wrapT = THREE.RepeatWrapping;
+            grass_texmap.anisotropy = grass_normap.anisotropy = grass_dismap.anisotropy = 16;
+            grass_texmap.repeat.set(7, 7);
+            grass_normap.repeat.set(7, 7);
+            grass_dismap.repeat.set(7, 7);
+            var grass_material = new THREE.MeshPhongMaterial({ map: grass_texmap, displacementMap: grass_dismap, displacementScale: 1.0 });
+            grass_field = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000), grass_material);
+            grass_field_physijs = new physijs.Plane(new THREE.PlaneGeometry(10000, 10000), new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0001 }), { mass: 0 });
+            grass_field.position.set(0, -24.2, 0);
+            grass_field.rotation.set(Math.PI / 2, Math.PI, 0);
+            grass_field_physijs.position.set(0, 0, 0);
+            grass_field_physijs.rotation.set(Math.PI / 2, Math.PI, 0);
+            scene.add(grass_field);
+            scene.add(grass_field_physijs);
+        }
+
+        function add_quadcopter() {
+            loader.load('models/MQ27/MQ-27.json', function (geometry, materials) {
+                quadcopter = new physijs.Box(geometry, materials, { mass: 1.0, restitution: 0.8, friction: 0, angular_damping: 0, linear_damping: 0 });
+                var bbox = new THREE.Box3().setFromObject(quadcopter);
+                quadcopter.position.y = -bbox.min.y - 24.5;
+                quadcopter.throttle_position = 0.1;
+                quadcopter.roll = 0;
+                quadcopter.pitch = 0;
+                quadcopter.yaw = 0;
+                gui.add(quadcopter, 'throttle_position').min(0.1).max(2.0).step(0.1).listen();
+                gui.add(quadcopter, 'roll').min(-0.2).max(0.2).step(0.001).listen();
+                gui.add(quadcopter, 'pitch').min(-0.2).max(0.2).step(0.001).listen();
+                gui.add(quadcopter, 'yaw').min(-0.15).max(0.15).step(0.001).listen();
+                scene.add(quadcopter);
+            });
+        }
+
+        function onStep(ticks) {
+            renderer.render(scene, camera);
+            setTimeout(scene.step.bind(scene, physics_framerate / 1000, undefined, onStep), physics_framerate);
+            if (quadcopter && keyboard) {
+                if (keyboard.pressed("z")) {
+                    quadcopter.throttle_position = Math.min(quadcopter.throttle_position + 0.1, 2);
+                }
+                if (keyboard.pressed("v")) {
+                    quadcopter.throttle_position = Math.max(quadcopter.throttle_position - 0.1, 0.1);
+                }
+                if (keyboard.pressed("x")) {
+                    quadcopter.throttle_position = Math.min(quadcopter.throttle_position + 0.01, 2);
+                }
+                if (keyboard.pressed("c")) {
+                    quadcopter.throttle_position = Math.max(quadcopter.throttle_position - 0.01, 0.1);
+                }
+                if (keyboard.pressed("a")) {
+                    quadcopter.roll = Math.max(quadcopter.roll - 0.04, -0.2);
+                }
+                if (keyboard.pressed("d")) {
+                    quadcopter.roll = Math.min(quadcopter.roll + 0.04, 0.2);
+                }
+                if (keyboard.pressed("s")) {
+                    quadcopter.pitch = Math.max(quadcopter.pitch - 0.02, -0.2);
+                }
+                if (keyboard.pressed("w")) {
+                    quadcopter.pitch = Math.min(quadcopter.pitch + 0.02, 0.2);
+                }
+                if (keyboard.pressed("q")) {
+                    quadcopter.yaw = Math.max(-0.17, quadcopter.yaw - 0.02);
+                }
+                if (keyboard.pressed("e")) {
+                    quadcopter.yaw = Math.min(0.17, quadcopter.yaw + 0.02);
+                }
+                if (keyboard.pressed("space") && ticks % 4 == 0) {
+                    cameraOnQuad = !cameraOnQuad;
+                    if (cameraOnQuad) {
+                        // mount on quad
+                        scene.remove(camera);
+                        camera.rotation.set(0, -Math.PI / 2, 0);
+                        camera.position.set(150, -27, 0);
+                        quadcopter.add(camera);
+                    }
+                    else {
+                        // mount on scene
+                        quadcopter.remove(camera);
+                        camera.position.set(500, 50, 0);
+                        camera.lookAt(scene);
+                        scene.add(camera)
+                    }
+                }
+
+                // apply rotations
+                tmpQuaternion.set(quadcopter.roll * quadcopter.throttle_position / 2.0, 
+                                  quadcopter.yaw * 0.05 * quadcopter.throttle_position / 2.0, 
+                                  quadcopter.pitch * quadcopter.throttle_position / 2.0, 1).normalize();
+                quadcopter.quaternion.multiply(tmpQuaternion);
+                quadcopter.roll += -quadcopter.roll * 0.5;
+                quadcopter.pitch += -quadcopter.pitch * 0.5;
+                quadcopter.yaw += -quadcopter.yaw * 0.1;
+                // roll
+                var orientation_z = new THREE.Vector3(0, 0, 1).applyQuaternion(quadcopter.getWorldQuaternion()).normalize();
+                var base = Math.sqrt(orientation_z.x * orientation_z.x + orientation_z.z * orientation_z.z);
+                var perpendicular = orientation_z.y;
+                var angle_with_xz = Math.atan2(perpendicular, base);
+                var desired_rotation = angle_with_xz * 0.2;
+                // TODO: Add roll and pitch restoration forces (aka spring action)
+                // console.log(180*angle_with_xz / (Math.PI), 180*desired_rotation/Math.PI);
+                // var f_spring = angle_with_xz * 0.5;
+                // var f_damping = roll_velocity * 0.1;
+                // var acc = (f_spring + f_damping) / 5000;
+                // roll_velocity = acc * physics_framerate;
+                // var angular_displacement = roll_velocity * physics_framerate;
+                tmpQuaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0).applyQuaternion(quadcopter.quaternion).normalize(), desired_rotation);
+                quadcopter.applyQuaternion(tmpQuaternion);
+                // pitch
+                var orientation_x = new THREE.Vector3(1, 0, 0).applyQuaternion(quadcopter.getWorldQuaternion()).normalize();
+                base = Math.sqrt(orientation_x.x * orientation_x.x + orientation_x.z * orientation_x.z);
+                perpendicular = orientation_x.y;
+                angle_with_xz = Math.atan2(perpendicular, base);
+                desired_rotation = -angle_with_xz * 0.2;
+                tmpQuaternion.setFromAxisAngle(new THREE.Vector3(0, 0, 1).applyQuaternion(quadcopter.quaternion).normalize(), desired_rotation);
+                quadcopter.applyQuaternion(tmpQuaternion);
+
+                // apply throttle
+                var directed_force = new THREE.Vector3();
+                var worldQuaternion = new THREE.Quaternion();
+                quadcopter.getWorldQuaternion(worldQuaternion);
+                directed_force.copy(quadcopter.up).applyQuaternion(worldQuaternion).normalize();
+                directed_force.multiplyScalar(quadcopter.throttle_position);
+                quadcopter.physics.applyForce(directed_force);
+
+            }
+            if (!cameraOnQuad && controls) {
+                controls.update();
+            }
+            if (stats)
+                stats.update();
+        }
+
+    </script>
+</body>
+</html>
