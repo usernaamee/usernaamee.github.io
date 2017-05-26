@@ -58,6 +58,14 @@
             document.body.appendChild(stats.domElement);
 
             // show keyboard controls info
+            var infodiv = document.createElement("div");
+            infodiv.domElement.style.position = 'fixed';
+            infodiv.domElement.style.bottom = '0px';
+            infodiv.domElement.style.right = '0px';
+            var txt = document.createTextNode("wasd: roll-n-pitch, qe: yaw, zxcv: throttle, space: camera");
+            infodiv.appendChild(txt);
+            document.body.appendChild(infodiv);
+
         }
 
         function setup_renderer_scene_and_camera() {
