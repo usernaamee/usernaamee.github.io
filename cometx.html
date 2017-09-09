@@ -6,13 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
-  <script src="https://cdn.rawgit.com/43081j/rar.js/master/rar.min.js"></script>
+  <!-- <script src="https://cdn.rawgit.com/43081j/rar.js/master/rar.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.4/jszip.js"></script>
   <script src="https://cdn.rawgit.com/timmywil/jquery.panzoom/master/dist/jquery.panzoom.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <title>CBR Reader</title>
+  <title>CBZ Reader</title>
 </head>
 <body style="overflow: hidden; padding-top: 51px;">
-  <input id="cbrUpload" type="file" name="comicfile" accept="application/x-rar-compressed" style="position: absolute; top: -200px;">
+  <input id="cbzUpload" type="file" name="comicfile" accept=".cbz" style="position: absolute; top: -200px;">
   <nav class="navbar navbar-default navbar-fixed-top navbar-offset">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -21,12 +22,12 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>                        
             </button>
-          <a class="navbar-brand" href="">CBR Reader</a>
+          <a class="navbar-brand" href="">CBZ Reader</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav">
             <li>
-              <a id="cbrUploadProxy" href="#">
+              <a id="cbzUploadProxy" href="#">
                 <span class="glyphicon glyphicon-open-file" aria-hidden="true"></span> Open
               </a>
             </li>
@@ -46,33 +47,28 @@
     var currPageIdx = 0;
     $(document).ready(function() {
       $(".panzoom-elements").panzoom();
-      $("a#cbrUploadProxy").click(function(evt) {
-        $('input#cbrUpload').click();
+      $("a#cbzUploadProxy").click(function(evt) {
+        $('input#cbzUpload').click();
         evt.preventDefault();
       });
-      $("input#cbrUpload").on("change", function(evt) {
-        var files = $("input#cbrUpload")[0].files;
+      $("input#cbzUpload").on("change", function(evt) {
+        var files = $("input#cbzUpload")[0].files;
         if(files.length==1){
           var comicFile = files[0];
           var comicFileName = comicFile.name;
+          $('#comic_title').css("color", "black");
           $('#comic_title').text(comicFileName);
           entryList = [];
-          archive = RarArchive(comicFile, function(err) {
-            if(err){
-              console.log(err);
-              $('#comic_title').text("Error: " + err);
-              return;
-            }
-            var entries = this.entries;
-            for(var idx in entries){
-              var entry = entries[idx];
-              if(!entry.path.endsWith('.jpg')) {
+          JSZip.loadAsync(comicFile)
+          .then(function(zip){
+            zip.forEach(function(relPath, entry){
+              if(!relPath.endsWith('.jpg')) {
                 continue;
               }
               entryList.push(entry);
-            }
-            displayComicsPage();
+            });
           });
+          displayComicsPage();
         }
       });
       $("img#comicsPage").on('load', function(evt){
@@ -82,14 +78,12 @@
         if(entryList.length<=0){
           return;
         }
-        archive.get(entryList[currPageIdx], function(err, blob){
-          if(err){
-            console.log("Error: " + err);
-            return;
-          }
-          var urlCreator = window.URL || window.webkitURL;
-          var imageUrl = urlCreator.createObjectURL(blob);
-          $("img#comicsPage")[0].src = imageUrl;
+        console.log(entryList);
+        zipObject = entryList[currPageIdx];
+        zipObject.async("arraybuffer").then(function(content){
+          var blob = new Blob([content], {'type':'image/jpg'});
+          var url = URL.createObjectURL(blob);
+          $("img#comicsPage")[0].src = url;
         });
       }
       $("body").on("keydown", function(evt){
