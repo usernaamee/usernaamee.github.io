@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>COVID-19 Quest</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/all.css">
+        <style>
+            html, body {
+                 height: 100%;
+            }
+        </style>
+    </head>
+    <!-- <body style="height: 100%; background-color:rgba(0, 0, 0, 0.4); "> -->
+    <body style="height: 100%; background-color:#272727;">
+        <div class="container-fluid" style="height: 100%">
+            <!-- <span class="qpage greetings" style="display: none;"> -->
+            <span class="qpage greetings">
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 600px; height: 420px;">
+                                <h2 style="color: white; text-shadow: rgba(0, 0, 0, 0.25) 1px 1px 1px; background-color: #4aaaa5; ">
+                                    Quest to find vocal signatures for detecting COVID-19
+                                </h2>
+                                <br>
+                                <ul style="text-align: justify; margin-right: 20px">
+                                    <li>The goal of this research is to find voice-based signatures to help screen for COVID-19 infections.</li>
+                                    <li>Donate your voice samples to help us find these signatures.</li>
+                                    <li>All data collected on our servers is encrypted end-to-end and will be anonymized.</li>
+                                </ul>
+                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                    <button class="btn btn-lg btn-warning next-btn" style="border: 5px double white;">Donate Your Voice</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+            <span class="qpage attention" style="display: none;">
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 600px; height: 420px;">
+                                <h2 class="alert alert-danger">Attention!</h2>
+                                <br>
+                                <ul style="text-align: justify; margin-right: 20px">
+                                    <li>You are about to answer a questionnaire about you, your health status.</li>
+                                    <li>You will also be asked to record your voice samples, which will help us developing our AI software.</li>
+                                    <li>You may choose to exit this survey at any point before submitting the data to the server, in which case none of your data will get stored with us.</li>
+                                    <li>We intend to use this data for research purpose only.</li>
+                                    <li>We do not provide any health advice or diagnosis regarding COVID-19.</li>
+                                </ul>
+                                <br>
+                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                    <div class="form-check" style="text-align: justify;">
+                                        <input type="checkbox" class="form-check-input" id="understand"> 
+                                        <label class="form-check-label" for="understand">I have read and understood the above points, and am willing to contribute my data for this research.</label>
+                                        <br>
+                                    </div>
+                                    <button id="understood" class="btn btn-lg btn-secondary next-btn" disabled='true'>Continue</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+            <span class="qpage questionnaire_1" style="display: none;">
+            <!-- <span class="qpage questionnaire_1"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 600px; height: 600px;">
+                                <div class="card-header">
+                                    <h2>Basic Information</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <form class="needs-validation" novalidate>
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control" id="name" required>
+                                            <div class="invalid-feedback">
+                                                Please enter Name
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="age">Age</label>
+                                            <input type="number" class="form-control" id="age" min="3" max="99" step="1" required>
+                                            <div class="invalid-feedback">
+                                                Please enter Age
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="language">Mother Tongue (Language)</label>
+                                            <input type="text" class="form-control" id="language" required>
+                                            <div class="invalid-feedback">
+                                                Please enter your Mother Tongue / Language
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-inline">
+                                            <label for="male">Gender </label> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="gender" value="male" required>
+                                                <label class="form-check-label" for="male">Male</label> 
+                                            </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="gender" value="female" required>
+                                                <label class="form-check-label" for="female">Female</label> 
+                                            </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="gender" value="other" required>
+                                                <label class="form-check-label" for="other">Other</label> 
+                                                <div class="invalid-feedback">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;Please select Gender
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-inline">
+                                            <label for="yes">Do you smoke? </label> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="smoker" value="yes" required>
+                                                <label class="form-check-label" for="yes">Yes</label> 
+                                            </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="smoker" value="no" required>
+                                                <label class="form-check-label" for="no">No</label> 
+                                                <div class="invalid-feedback">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;Please select your status
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                    <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+            <span class="qpage questionnaire_2" style="display: none;">
+            <!-- <span class="qpage questionnaire_2"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 600px; height: 750px;">
+                                <div class="card-header">
+                                    <h2>Health Status</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <form class="needs-validation" novalidate>
+                                        <div class="form-group">
+                                            <label for="symptoms">Current Symptoms (select multiple)</label>
+                                            <select class="form-control" id="symptoms" multiple required>
+                                                <option>None</option>
+                                                <option>Fever</option>
+                                                <option>Cough</option>
+                                                <option>Shortness of Breath</option>
+                                                <option>Sneezing</option>
+                                                <option>Body Ache</option>
+                                                <option>Sore Throat</option>
+                                                <option>Running Nose</option>
+                                                <option>Feeling Tired</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Please select a symptom
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="condition">Chronic Health Conditions</label>
+                                            <select class="form-control" id="condition" multiple required>
+                                                <option>None</option>
+                                                <option>Lung Related (Asthama, COPD, etc)</option>
+                                                <option>Heart Related</option>
+                                                <option>Neurological (Alzheimers, Parkinsons, etc)</option>
+                                                <option>Diabetes</option>
+                                                <option>Any other</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Please select a health condition option
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="medicine">Currently taking any medicine (in last 24 hours)</label>
+                                            <select class="form-control" id="medicine" multiple required>
+                                                <option>None</option>
+                                                <option>Fever Reducing</option>
+                                                <option>Pain Killers</option>
+                                                <option>Anti-Biotics</option>
+                                                <option>Decongestants</option>
+                                                <option>Inhalers/Nebulizers</option>
+                                                <option>Not sure</option>
+                                                <option>Any other</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Please select your recent medicinal status
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-inline">
+                                            <label for="not-sure">COVID-19 Status </label> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="covid" value="not-sure" required>
+                                                <label class="form-check-label" for="not-sure">Not Sure</label> 
+                                            </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="covid" value="positive" required>
+                                                <label class="form-check-label" for="positive">Positive</label> 
+                                            </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="covid" value="negative" required>
+                                                <label class="form-check-label" for="negative">Negative</label> 
+                                            </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="covid" value="recovered" required>
+                                                <label class="form-check-label" for="recovered">Recovered</label> 
+                                                <div class="invalid-feedback">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp; Please select your COVID-19 status
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                    <button class="btn btn-lg btn-secondary prev-btn">Previous</button>
+                                    <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+            <span class="qpage questionnaire_3" style="display: none;">
+            <!-- <span class="qpage questionnaire_3"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 640px; height: 680px;">
+                                <div class="card-header">
+                                    <h2>Record Audios</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <form class="needs-validation" novalidate>
+                                        <center class="alert alert-danger"><b>Note:</b> For each sound, choose <u>EITHER</u> Record <u>OR</u> Upload </center>
+                                        <table class="table table-bordered" style="text-align: center;">
+                                            <thead class="table-info">
+                                                <tr>
+                                                    <th>Sound</th>
+                                                    <th>Sample</th>
+                                                    <th>Record</th>
+                                                    <th>Upload</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Cough</td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info sample_audio_link">
+                                                            <i class="fa fa-play"></i>
+                                                            <audio class="sample_audio">
+                                                              <source src="sample_audios/cough-sample.ogg" type="audio/ogg">
+                                                              &lt;&lt;your browser does not support audio player&gt;&gt;
+                                                            </audio>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div id="coughRecordControl">
+                                                            <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                            <span class="audio-playback" style="display:none;">
+                                                            <audio class="recorded_audio"></audio>
+                                                                <button class="btn btn-sm btn-info play_recording">
+                                                                    Play
+                                                                </button>
+                                                            </span>
+                                                            <input name="audio_cough" id="coughFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info coughUploadBtn" onclick="event.preventDefault(); $('#coughFile').click();"><i class="fas fa-upload"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>AAA</td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info sample_audio_link">
+                                                            <i class="fa fa-play"></i>
+                                                            <audio class="sample_audio">
+                                                              <source src="sample_audios/aaa-sample.ogg" type="audio/ogg">
+                                                              &lt;&lt;your browser does not support audio player&gt;&gt;
+                                                            </audio>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div id="aaaRecordControl">
+                                                            <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                            <span class="audio-playback" style="display:none;">
+                                                            <audio class="recorded_audio"></audio>
+                                                                <button class="btn btn-sm btn-info play_recording">
+                                                                    Play
+                                                                </button>
+                                                            </span>
+                                                            <input name="audio_aaa" id="aaaFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info aaaUploadBtn" onclick="event.preventDefault(); $('#aaaFile').click();"><i class="fas fa-upload"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>EEE</td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info sample_audio_link">
+                                                            <i class="fa fa-play"></i>
+                                                            <audio class="sample_audio">
+                                                              <source src="sample_audios/eee-sample.ogg" type="audio/ogg">
+                                                              &lt;&lt;your browser does not support audio player&gt;&gt;
+                                                            </audio>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div id="eeeRecordControl">
+                                                            <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                            <span class="audio-playback" style="display:none;">
+                                                            <audio class="recorded_audio"></audio>
+                                                                <button class="btn btn-sm btn-info play_recording">
+                                                                    Play
+                                                                </button>
+                                                            </span>
+                                                            <input name="audio_eee" id="eeeFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info eeeUploadBtn" onclick="event.preventDefault(); $('#eeeFile').click();"><i class="fas fa-upload"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>OOO</td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info sample_audio_link">
+                                                            <i class="fa fa-play"></i>
+                                                            <audio class="sample_audio">
+                                                              <source src="sample_audios/ooo-sample.ogg" type="audio/ogg">
+                                                              &lt;&lt;your browser does not support audio player&gt;&gt;
+                                                            </audio>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div id="oooRecordControl">
+                                                            <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                            <span class="audio-playback" style="display:none;">
+                                                            <audio class="recorded_audio"></audio>
+                                                                <button class="btn btn-sm btn-info play_recording">
+                                                                    Play
+                                                                </button>
+                                                            </span>
+                                                            <input name="audio_ooo" id="oooFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info oooUploadBtn" onclick="event.preventDefault(); $('#oooFile').click();"><i class="fas fa-upload"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Count (1 to 20)</td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info sample_audio_link">
+                                                            <i class="fa fa-play"></i>
+                                                            <audio class="sample_audio">
+                                                              <source src="sample_audios/count-sample.ogg" type="audio/ogg">
+                                                              &lt;&lt;your browser does not support audio player&gt;&gt;
+                                                            </audio>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div id="countRecordControl">
+                                                            <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                            <span class="audio-playback" style="display:none;">
+                                                            <audio class="recorded_audio"></audio>
+                                                                <button class="btn btn-sm btn-info play_recording">
+                                                                    Play
+                                                                </button>
+                                                            </span>
+                                                            <input name="audio_count" id="countFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info countUploadBtn" onclick="event.preventDefault(); $('#countFile').click();"><i class="fas fa-upload"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Alphabet (A to Z)</td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info sample_audio_link">
+                                                            <i class="fa fa-play"></i>
+                                                            <audio class="sample_audio">
+                                                              <source src="sample_audios/alphabet-sample.ogg" type="audio/ogg">
+                                                              &lt;&lt;your browser does not support audio player&gt;&gt;
+                                                            </audio>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div id="alphabetRecordControl">
+                                                            <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                            <span class="audio-playback" style="display:none;">
+                                                            <audio class="recorded_audio"></audio>
+                                                                <button class="btn btn-sm btn-info play_recording">
+                                                                    Play
+                                                                </button>
+                                                            </span>
+                                                            <input name="audio_az" id="azFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a class="btn btn-outline-info alphabetUploadBtn" onclick="event.preventDefault(); $('#azFile').click();"><i class="fas fa-upload"></i></a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                    <button class="btn btn-lg btn-secondary prev-btn">Previous</button>
+                                    <button id="submitFormButton" class="btn btn-lg btn-secondary disabled" disabled>Submit</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+        </div>
+        <script src="/js/jquery-3.4.1.min.js"></script>
+        <script src="/js/popper.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>    
+        <script src="/js/recorder.js"></script>
+        <script src="/js/for_recording.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('.next-btn').click(function(evt){
+                    evt.preventDefault();
+                    var thisPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+                    var nextPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling;
+                    $(thisPage).hide();
+                    $(nextPage).show();
+                });
+                $('.next-btn-with-validation').click(function(evt){
+                    evt.preventDefault();
+                    // check if all inputs in current page are valid
+                    var thisPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+                    var thisForm = $(thisPage).find('form.needs-validation')[0];
+                    thisForm.classList.add('was-validated');
+                    if(!thisForm.checkValidity()){
+                        evt.stopPropagation();
+                        return;
+                    }
+                    var nextPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling;
+                    $(thisPage).hide();
+                    $(nextPage).show();
+                });
+                $('.prev-btn').click(function(evt){
+                    evt.preventDefault();
+                    var thisPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+                    var prevPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling;
+                    $(thisPage).hide();
+                    $(prevPage).show();
+                });
+                $('#understand').change(function(evt){
+                    evt.preventDefault();
+                    if(evt.target.checked){
+                        $('#understood').removeAttr('disabled');
+                        $('#understood').removeClass('btn-secondary');
+                        $('#understood').addClass('btn-primary');
+                    }
+                    else{
+                        $('#understood').prop('disabled', true);
+                        $('#understood').removeClass('btn-primary');
+                        $('#understood').addClass('btn-secondary');
+                    }
+                });
+                $(".sample_audio_link").on('click', function(evt){
+                    evt.preventDefault();
+                    // stop any **other** audio which is already playing
+                    var otherAudios = $('audio');
+                    var currentAudioTag = $(evt.target.parentElement).find('audio')[0];
+                    for(var i=0; i<otherAudios.length; i++){
+                        var thisAudio = otherAudios[i];
+                        if ((thisAudio != currentAudioTag) && (thisAudio.duration > 0 && !thisAudio.paused)){
+                            thisAudio.pause();
+                            thisAudio.currentTime = 0;
+                            thisAudio.previousElementSibling.classList.remove('fa-stop');
+                            thisAudio.previousElementSibling.classList.add('fa-play');
+                        }
+                    } 
+                    // toggle currentAudioTag between play and stop states
+                    if (currentAudioTag.duration > 0 && !currentAudioTag.paused) {
+                        currentAudioTag.pause();
+                        currentAudioTag.currentTime = 0;
+                        currentAudioTag.previousElementSibling.classList.remove('fa-stop');
+                        currentAudioTag.previousElementSibling.classList.add('fa-play');
+                    } else {
+                        currentAudioTag.play();
+                        currentAudioTag.previousElementSibling.classList.remove('fa-play');
+                        currentAudioTag.previousElementSibling.classList.add('fa-stop');
+                    }
+                });
+                $('input[type="file"]').on('change', function(evt){
+                    // check if all file elements have valid files
+                    // and if so, enable the submit button
+                    var allFilesAreSet = true;
+                    var fileElements = $('input[type="file"]');
+                    for(var i=0; i<fileElements.length; i++){
+                        var elem = fileElements[i];
+                        if (elem.files.length == 0){
+                        allFilesAreSet = false;
+                        }
+                    }
+                    if (allFilesAreSet){
+                        if ($('#submitFormButton')[0].classList.contains('disabled')){
+                        $('#submitFormButton')[0].classList.remove('disabled');
+                        }
+                        if ($('#submitFormButton')[0].classList.contains('btn-secondary')){
+                        $('#submitFormButton')[0].classList.remove('btn-secondary');
+                        $('#submitFormButton')[0].classList.add('btn-primary');
+                        }
+                        $('#submitFormButton').prop('disabled', false);
+                    }
+                    else{
+                        if (!$('#submitFormButton')[0].classList.contains('disabled')){
+                        $('#submitFormButton')[0].classList.add('disabled');
+                        }
+                        if (!$('#submitFormButton')[0].classList.contains('btn-secondary')){
+                        $('#submitFormButton')[0].classList.add('btn-secondary');
+                        $('#submitFormButton')[0].classList.remove('btn-primary');
+                        }
+                        $('#submitFormButton').prop('disabled', true);
+                    }
+                });
+                $('.play_recording').click(function(evt){
+                    evt.preventDefault();
+                    var currentAudioTag = $(evt.target)[0].previousElementSibling;
+                    if (currentAudioTag.duration > 0 && !currentAudioTag.paused) {
+                        currentAudioTag.pause();
+                        currentAudioTag.currentTime = 0;
+                        $(evt.target)[0].innerText = "play";
+                    } else {
+                        currentAudioTag.play();
+                        $(evt.target)[0].innerText = "stop";
+                    }
+                });
+                $('.recorded_audio').on('ended', function(evt){
+                    var btn = $(evt.target)[0].nextElementSibling;
+                    btn.innerText = "play";
+                });
+                $('.sample_audio').on('ended', function(evt){
+                    var ielem = $(evt.target)[0].previousElementSibling;
+                    ielem.classList.remove('fa-stop');
+                    ielem.classList.add('fa-play');
+                });
+                $('#submitFormButton').click(function(evt){
+                    evt.preventDefault();
+                    if(confirm('Are you sure you want to submit your data?')){
+                        alert('Data submitted successfully');
+                        location.reload();
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>
