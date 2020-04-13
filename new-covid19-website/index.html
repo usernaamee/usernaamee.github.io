@@ -20,7 +20,7 @@
                 <div class="row h-100">
                     <div class="col-sm-12 align-self-center text-center">
                         <center>
-                            <div class="card" style="width: 600px; height: 420px;">
+                            <div class="card" style="width: 360px;">
                                 <h2 style="color: white; text-shadow: rgba(0, 0, 0, 0.25) 1px 1px 1px; background-color: #4aaaa5; ">
                                     Quest to find vocal signatures for detecting COVID-19
                                 </h2>
@@ -28,9 +28,10 @@
                                 <ul style="text-align: justify; margin-right: 20px">
                                     <li>The goal of this research is to find voice-based signatures to help screen for COVID-19 infections.</li>
                                     <li>Donate your voice samples to help us find these signatures.</li>
-                                    <li>All data collected on our servers is encrypted end-to-end and will be anonymized.</li>
+                                    <li>All data collected on client and is downloadable by you.</li>
+                                    <li>To share your data with us, kindly follow the instructions provided at the end of the survey.</li>
                                 </ul>
-                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                <div class="col-md-12" style="margin-bottom: 10px;">
                                     <button class="btn btn-lg btn-warning next-btn" style="border: 5px double white;">Donate Your Voice</button>
                                 </div>
                             </div>
@@ -42,18 +43,18 @@
                 <div class="row h-100">
                     <div class="col-sm-12 align-self-center text-center">
                         <center>
-                            <div class="card" style="width: 600px; height: 420px;">
+                            <div class="card" style="width: 360px;">
                                 <h2 class="alert alert-danger">Attention!</h2>
                                 <br>
                                 <ul style="text-align: justify; margin-right: 20px">
                                     <li>You are about to answer a questionnaire about you, your health status.</li>
                                     <li>You will also be asked to record your voice samples, which will help us developing our AI software.</li>
-                                    <li>You may choose to exit this survey at any point before submitting the data to the server, in which case none of your data will get stored with us.</li>
+                                    <li>You may choose to exit this survey at any point, in which case none of your data will get stored with us.</li>
                                     <li>We intend to use this data for research purpose only.</li>
                                     <li>We do not provide any health advice or diagnosis regarding COVID-19.</li>
                                 </ul>
                                 <br>
-                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                <div class="col-md-12" style="margin-bottom: 10px;">
                                     <div class="form-check" style="text-align: justify;">
                                         <input type="checkbox" class="form-check-input" id="understand"> 
                                         <label class="form-check-label" for="understand">I have read and understood the above points, and am willing to contribute my data for this research.</label>
@@ -71,7 +72,7 @@
                 <div class="row h-100">
                     <div class="col-sm-12 align-self-center text-center">
                         <center>
-                            <div class="card" style="width: 600px; height: 600px;">
+                            <div class="card" style="width: 360px;">
                                 <div class="card-header">
                                     <h2>Basic Information</h2>
                                 </div>
@@ -132,7 +133,7 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                <div class="col-md-12" style="margin-bottom: 10px;">
                                     <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
                                 </div>
                             </div>
@@ -145,7 +146,7 @@
                 <div class="row h-100">
                     <div class="col-sm-12 align-self-center text-center">
                         <center>
-                            <div class="card" style="width: 600px; height: 750px;">
+                            <div class="card" style="width: 360px;">
                                 <div class="card-header">
                                     <h2>Health Status</h2>
                                 </div>
@@ -154,15 +155,15 @@
                                         <div class="form-group">
                                             <label for="symptoms">Current Symptoms (select multiple)</label>
                                             <select class="form-control" id="symptoms" multiple required>
-                                                <option>None</option>
-                                                <option>Fever</option>
-                                                <option>Cough</option>
-                                                <option>Shortness of Breath</option>
-                                                <option>Sneezing</option>
-                                                <option>Body Ache</option>
-                                                <option>Sore Throat</option>
-                                                <option>Running Nose</option>
-                                                <option>Feeling Tired</option>
+                                                <option value="none">None</option>
+                                                <option value="fever">Fever</option>
+                                                <option value="cough">Cough</option>
+                                                <option value="shortness_of_breath">Shortness of Breath</option>
+                                                <option value="sneezing">Sneezing</option>
+                                                <option value="body_ache">Body Ache</option>
+                                                <option value="sore_throat">Sore Throat</option>
+                                                <option value="running_nose">Running Nose</option>
+                                                <option value="feeling_tired">Feeling Tired</option>
                                             </select>
                                             <div class="invalid-feedback">
                                                 Please select a symptom
@@ -171,12 +172,12 @@
                                         <div class="form-group">
                                             <label for="condition">Chronic Health Conditions</label>
                                             <select class="form-control" id="condition" multiple required>
-                                                <option>None</option>
-                                                <option>Lung Related (Asthama, COPD, etc)</option>
-                                                <option>Heart Related</option>
-                                                <option>Neurological (Alzheimers, Parkinsons, etc)</option>
-                                                <option>Diabetes</option>
-                                                <option>Any other</option>
+                                                <option value="none">None</option>
+                                                <option value="lung_related">Lung Related (Asthama, COPD, etc)</option>
+                                                <option value="heart_related">Heart Related</option>
+                                                <option value="neurological">Neurological (Alzheimers, Parkinsons, etc)</option>
+                                                <option value="diabetes">Diabetes</option>
+                                                <option value="any_other">Any other</option>
                                             </select>
                                             <div class="invalid-feedback">
                                                 Please select a health condition option
@@ -185,14 +186,14 @@
                                         <div class="form-group">
                                             <label for="medicine">Currently taking any medicine (in last 24 hours)</label>
                                             <select class="form-control" id="medicine" multiple required>
-                                                <option>None</option>
-                                                <option>Fever Reducing</option>
-                                                <option>Pain Killers</option>
-                                                <option>Anti-Biotics</option>
-                                                <option>Decongestants</option>
-                                                <option>Inhalers/Nebulizers</option>
-                                                <option>Not sure</option>
-                                                <option>Any other</option>
+                                                <option value="none">None</option>
+                                                <option value="fever_reducing">Fever Reducing</option>
+                                                <option value="pain_killers">Pain Killers</option>
+                                                <option value="anti_biotics">Anti-Biotics</option>
+                                                <option value="decongestants">Decongestants</option>
+                                                <option value="inhalers_nebulizers">Inhalers/Nebulizers</option>
+                                                <option value="not_sure">Not sure</option>
+                                                <option value="any_other">Any other</option>
                                             </select>
                                             <div class="invalid-feedback">
                                                 Please select your recent medicinal status
@@ -222,10 +223,10 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                <center class="col-md-12" style="margin-bottom: 10px;">
                                     <button class="btn btn-lg btn-secondary prev-btn">Previous</button>
                                     <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
-                                </div>
+                                </center>
                             </div>
                         </center>
                     </div>
@@ -236,7 +237,7 @@
                 <div class="row h-100">
                     <div class="col-sm-12 align-self-center text-center">
                         <center>
-                            <div class="card" style="width: 640px; height: 680px;">
+                            <div class="card" style="width: 360px;">
                                 <div class="card-header">
                                     <h2>Record Audios</h2>
                                 </div>
@@ -269,11 +270,14 @@
                                                             <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
                                                             <span class="audio-playback" style="display:none;">
                                                             <audio class="recorded_audio"></audio>
-                                                                <button class="btn btn-sm btn-info play_recording">
-                                                                    Play
+                                                                <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
+                                                                    play
                                                                 </button>
                                                             </span>
-                                                            <input name="audio_cough" id="coughFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                            <input name="audio_cough" id="coughFile" type="file" style="visibility: hidden; position: absolute; left: 0px;" required>
+                                                            <div class="invalid-feedback">
+                                                                Audio required. Please record or upload one.
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -296,11 +300,15 @@
                                                             <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
                                                             <span class="audio-playback" style="display:none;">
                                                             <audio class="recorded_audio"></audio>
-                                                                <button class="btn btn-sm btn-info play_recording">
-                                                                    Play
+                                                                <br>
+                                                                <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
+                                                                    play
                                                                 </button>
                                                             </span>
-                                                            <input name="audio_aaa" id="aaaFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                            <input name="audio_aaa" id="aaaFile" type="file" style="visibility: hidden; position: absolute; left: 0px;" required>
+                                                            <div class="invalid-feedback">
+                                                                Audio required. Please record or upload one.
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -323,11 +331,15 @@
                                                             <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
                                                             <span class="audio-playback" style="display:none;">
                                                             <audio class="recorded_audio"></audio>
-                                                                <button class="btn btn-sm btn-info play_recording">
-                                                                    Play
+                                                                <br>
+                                                                <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
+                                                                    play
                                                                 </button>
                                                             </span>
-                                                            <input name="audio_eee" id="eeeFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                            <input name="audio_eee" id="eeeFile" type="file" style="visibility: hidden; position: absolute; left: 0px;" required>
+                                                            <div class="invalid-feedback">
+                                                                Audio required. Please record or upload one.
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -350,11 +362,15 @@
                                                             <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
                                                             <span class="audio-playback" style="display:none;">
                                                             <audio class="recorded_audio"></audio>
-                                                                <button class="btn btn-sm btn-info play_recording">
-                                                                    Play
+                                                                <br>
+                                                                <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
+                                                                    play
                                                                 </button>
                                                             </span>
-                                                            <input name="audio_ooo" id="oooFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                            <input name="audio_ooo" id="oooFile" type="file" style="visibility: hidden; position: absolute; left: 0px;" required>
+                                                            <div class="invalid-feedback">
+                                                                Audio required. Please record or upload one.
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -362,7 +378,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Count (1 to 20)</td>
+                                                    <td>Count <br>(1 to 20)</td>
                                                     <td>
                                                         <a class="btn btn-outline-info sample_audio_link">
                                                             <i class="fa fa-play"></i>
@@ -377,11 +393,15 @@
                                                             <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
                                                             <span class="audio-playback" style="display:none;">
                                                             <audio class="recorded_audio"></audio>
-                                                                <button class="btn btn-sm btn-info play_recording">
-                                                                    Play
+                                                                <br>
+                                                                <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
+                                                                    play
                                                                 </button>
                                                             </span>
-                                                            <input name="audio_count" id="countFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                            <input name="audio_count" id="countFile" type="file" style="visibility: hidden; position: absolute; left: 0px;" required>
+                                                            <div class="invalid-feedback">
+                                                                Audio required. Please record or upload one.
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -389,7 +409,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Alphabet (A to Z)</td>
+                                                    <td>Alphabet <br>(A to Z)</td>
                                                     <td>
                                                         <a class="btn btn-outline-info sample_audio_link">
                                                             <i class="fa fa-play"></i>
@@ -403,12 +423,16 @@
                                                         <div id="alphabetRecordControl">
                                                             <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
                                                             <span class="audio-playback" style="display:none;">
+                                                            <br>
                                                             <audio class="recorded_audio"></audio>
-                                                                <button class="btn btn-sm btn-info play_recording">
-                                                                    Play
+                                                                <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
+                                                                    play
                                                                 </button>
                                                             </span>
-                                                            <input name="audio_az" id="azFile" type="file" style="visibility: hidden; position: absolute; left: 0px;">
+                                                            <input name="audio_az" id="azFile" type="file" style="visibility: hidden; position: absolute; left: 0px;" required>
+                                                            <div class="invalid-feedback">
+                                                                Audio required. Please record or upload one.
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -419,21 +443,56 @@
                                         </table>
                                     </form>
                                 </div>
-                                <div class="col-md-12" style="position: absolute; bottom: 10px; margin: auto;">
+                                <div class="col-md-12" style="margin-bottom: 10px;">
                                     <button class="btn btn-lg btn-secondary prev-btn">Previous</button>
-                                    <button id="submitFormButton" class="btn btn-lg btn-secondary disabled" disabled>Submit</button>
+                                    <!-- <button id="submitFormButton" class="btn btn-lg btn-secondary disabled" disabled>Download</button> -->
+                                    <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
                                 </div>
                             </div>
                         </center>
                     </div>
                 </div>
             </span>
+
+            <span class="qpage final_page" style="display: none;">
+            <!-- <span class="qpage final_page"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 360px;">
+                                <div class="card-header">
+                                    <h2 onclick="$('#aaaFile').click();">Complete!</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <ul>
+                                        <li>You have completed this survey.</li>
+                                        <li>Your data is ready for download.</li>
+                                        <li>You can download your data (as a zip file) by clicking on the Download button below.</li>
+                                        <li class="alert alert-success">If you wish to submit your data with us for research, please use one of the below listed methods:
+                                            <ul>
+                                                <li><b>Email:</b> abc@xyz.com</li>
+                                                <li><b>Whatsapp:</b> 9999999999</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <!-- <button class="btn btn-lg btn-secondary prev-btn">Previous</button> -->
+                                    <button class="btn btn-lg btn-primary download_data">Download</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+            <a id="downloadAnchorElem" style="visibility: hidden; position: absolute; left: 0px; "></a>
         </div>
         <script src="/js/jquery-3.4.1.min.js"></script>
         <script src="/js/popper.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>    
         <script src="/js/recorder.js"></script>
         <script src="/js/for_recording.js"></script>
+        <script src="/js/jszip.min.js"></script>
         <script>
             $(document).ready(function(){
                 $('.next-btn').click(function(evt){
@@ -514,26 +573,6 @@
                         allFilesAreSet = false;
                         }
                     }
-                    if (allFilesAreSet){
-                        if ($('#submitFormButton')[0].classList.contains('disabled')){
-                        $('#submitFormButton')[0].classList.remove('disabled');
-                        }
-                        if ($('#submitFormButton')[0].classList.contains('btn-secondary')){
-                        $('#submitFormButton')[0].classList.remove('btn-secondary');
-                        $('#submitFormButton')[0].classList.add('btn-primary');
-                        }
-                        $('#submitFormButton').prop('disabled', false);
-                    }
-                    else{
-                        if (!$('#submitFormButton')[0].classList.contains('disabled')){
-                        $('#submitFormButton')[0].classList.add('disabled');
-                        }
-                        if (!$('#submitFormButton')[0].classList.contains('btn-secondary')){
-                        $('#submitFormButton')[0].classList.add('btn-secondary');
-                        $('#submitFormButton')[0].classList.remove('btn-primary');
-                        }
-                        $('#submitFormButton').prop('disabled', true);
-                    }
                 });
                 $('.play_recording').click(function(evt){
                     evt.preventDefault();
@@ -556,14 +595,39 @@
                     ielem.classList.remove('fa-stop');
                     ielem.classList.add('fa-play');
                 });
-                $('#submitFormButton').click(function(evt){
+                $('.download_data').click(function(evt){
                     evt.preventDefault();
-                    if(confirm('Are you sure you want to submit your data?')){
-                        alert('Data submitted successfully');
-                        location.reload();
-                    }
-                })
-            })
+                    var info = {};
+                    var name = $('#name').val();
+                    var age = $('#age').val();
+                    var language = $('#language').val();
+                    var gender = $('input[name="gender"]:checked').val();
+                    var smoker = $('input[name="smoker"]:checked').val();
+                    var symptoms = $('#symptoms').val();
+                    var condition = $('#condition').val();
+                    var medicine = $('#medicine').val();
+                    var covid = $('input[name="covid"]:checked').val();
+                    info.name = name; info.age = age; info.language = language;
+                    info.gender = gender; info.smoker = smoker; info.symptoms = symptoms;
+                    info.condition = condition; info.medicine = medicine; info.covid = covid;
+                    console.log(info);
+                    var dlAnchorElem = $('#downloadAnchorElem')[0];
+                    var zip = JSZip();
+                    zip.file('info.json', JSON.stringify(info));
+                    zip.file('aaa.wav', $('#aaaFile')[0].files[0]);
+                    zip.file('eee.wav', $('#eeeFile')[0].files[0]);
+                    zip.file('ooo.wav', $('#oooFile')[0].files[0]);
+                    zip.file('cough.wav', $('#coughFile')[0].files[0]);
+                    zip.file('count.wav', $('#countFile')[0].files[0]);
+                    zip.file('alphabet.wav', $('#azFile')[0].files[0]);
+                    zip.generateAsync({type:"blob"})
+                    .then(function(content) {
+                        dlAnchorElem.setAttribute("href", URL.createObjectURL(content));
+                        dlAnchorElem.setAttribute("download", "covid19-data-.zip");
+                        dlAnchorElem.click();
+                    });
+                });
+            });
         </script>
     </body>
 </html>
