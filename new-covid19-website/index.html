@@ -79,7 +79,7 @@
                                 <div class="card-body" style="text-align: justify;">
                                     <form class="needs-validation" novalidate>
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Name/Email/Initials</label>
                                             <input type="text" class="form-control" id="name" required>
                                             <div class="invalid-feedback">
                                                 Please enter Name
@@ -610,6 +610,15 @@
                     info.name = name; info.age = age; info.language = language;
                     info.gender = gender; info.smoker = smoker; info.symptoms = symptoms;
                     info.condition = condition; info.medicine = medicine; info.covid = covid;
+                    var ts = 0;
+                    try{
+                        ts = new Date().valueOf();
+                    }
+                    catch(err){
+                        console.log('Error generating timestamp');
+                        console.log(err);
+                    }
+                    
                     console.log(info);
                     var dlAnchorElem = $('#downloadAnchorElem')[0];
                     var zip = JSZip();
@@ -623,7 +632,7 @@
                     zip.generateAsync({type:"blob"})
                     .then(function(content) {
                         dlAnchorElem.setAttribute("href", URL.createObjectURL(content));
-                        dlAnchorElem.setAttribute("download", "covid19-data-.zip");
+                        dlAnchorElem.setAttribute("download", "covid19-data-"+ts+".zip");
                         dlAnchorElem.click();
                     });
                 });
