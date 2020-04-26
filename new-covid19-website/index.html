@@ -1,145 +1,429 @@
-<!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>COVID-19 Quest</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/all.css">
-        <style>
-            html, body {
-                 height: 100%;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container-fluid" style="height: 100%">
-            <div class="row h-100">
-                <div class="col-sm-12 align-self-center text-center">
-                    <div id="divControl">
-                        <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
-                        <span class="audio-playback" style="display:none;">
-                        <audio class="recorded_audio"></audio>
-                            <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
-                                play
-                            </button>
-                        </span>
+    <meta charset="UTF-8">
+    <title>Recorder.js demo for uploading multiple files </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.css">
+    <style>
+      .recording{
+        background: orange;
+        animation: example 1s ease infinite;
+        animation-direction: alternate;
+      }
+      @keyframes example {
+        from   {background-color: orange;}
+        to  {background-color: orangered;}
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div class="container">
+      <div class="card-group">
+        <form method="POST">
+			
+		<div class="card-body">
+                <div class="row">
+                  <div class="col"></div>
+                  <div class="col"><input id="tempID" type="hidden" name="tempID" value="358"></div>
+                </div>
+            </div>
+          </form></div>
+		  
+        <div class="container">
+          <div class="card">
+            <div class="card-header">
+              Cough
+              <a class="btn btn-outline-info float-sm-right sample_audio_link">
+                  उदाहरण सुने / Play Example
+                  <audio class="sample_audio">
+                    <source src="sample_audios/cough-sample.ogg" type="audio/ogg">
+                    &lt;&lt;your browser does not support audio player&gt;&gt;
+                  </audio>
+              </a>
+            </div>
+            <div class="card-body">
+                <p> Click the microphone to start recording, cough 3 times, then click again to stop recording. 
+                <input name="audio_cough" id="coughFile" type="file" style="visibility: hidden; white-space: nowrap;">
+                <br>Or alternatively, <button class="btn btn-outline-dark coughUploadBtn" onclick="event.preventDefault(); $('#coughFile').click();"><i class="fas fa-upload"> Upload</i></button> manually.</p>
+                <div id="coughRecordControl">
+                  <div class="row justify-content-start">
+                    <div class="col">
+                      <button type="button" class="btn btn-outline-dark recorder"><i class="fas fa-microphone"> Record</i></button>
                     </div>
-                    <span id="msg">
+                    <div class="recording-indicator col" style="display:none; white-space: nowrap;">
+                      <div class="spinner-border text-primary" role="status"></div>
+                      Recording
+                    </div>
+                    <div class="audio-playback col" style="display:none;">
+                      <audio controls="controls"></audio>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <div class="card">
+              <div class="card-header">
+                AAA
+                <a class="btn btn-outline-info float-sm-right sample_audio_link">
+                    उदाहरण सुने / Play Example
+                    <audio class="sample_audio">
+                      <source src="sample_audios/aaa-sample.ogg" type="audio/ogg">
+                      &lt;&lt;your browser does not support audio player&gt;&gt;
+                    </audio>
+                </a>
+              </div>
+              <div class="card-body">
+                  <p> Press the record button and say 'aaa' for as long as you can (i.e. same as the 'aaa' sound in the word 'car' or 'far'). 
+                  <input name="audio_aaa" id="aaaFile" type="file" style="visibility: hidden; white-space: nowrap;">
+                  <br>Or alternatively, <button class="btn btn-outline-dark aaaUploadBtn" onclick="event.preventDefault(); $('#aaaFile').click();"><i class="fas fa-upload"> Upload</i></button> manually.</p>
+                  <div id="aaaRecordControl">
+                      <div class="row justify-content-start">
+                          <div class="col">
+                              <button type="button" class="btn btn-outline-dark recorder"><i class="fas fa-microphone"> Record</i></button>
+                          </div>
+                          <div class="recording-indicator col" style="display:none; white-space: nowrap;">
+                              <div class="spinner-border text-primary" role="status"></div>
+                              Recording
+                          </div>
+                          <div class="audio-playback col" style="display:none;">
+                              <audio controls="controls"></audio>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="container">
+            <div class="card">
+              <div class="card-header">
+                EEE
+                <a class="btn btn-outline-info float-sm-right sample_audio_link">
+                    उदाहरण सुने / Play Example
+                    <audio class="sample_audio">
+                      <source src="sample_audios/eee-sample.ogg" type="audio/ogg">
+                      &lt;&lt;your browser does not support audio player&gt;&gt;
+                    </audio>
+                </a>
+              </div>
+              <div class="card-body">
+                  <p> Press the record button and say 'eee' for as long as you can (i.e. same as the 'eee' sound in the word 'cheese' or 'feet'). 
+                  <input name="audio_eee" id="eeeFile" type="file" style="visibility: hidden; white-space: nowrap;">
+                  <br>Or alternatively, <button class="btn btn-outline-dark eeeUploadBtn" onclick="event.preventDefault(); $('#eeeFile').click();"><i class="fas fa-upload"> Upload</i></button> manually.</p>
+                  <div id="eeeRecordControl">
+                    <div class="row justify-content-start">
+                      <div class="col">
+                        <button type="button" class="btn btn-outline-dark recorder"><i class="fas fa-microphone"> Record</i></button>
+                      </div>
+                      <div class="recording-indicator col" style="display:none; white-space: nowrap;">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        Recording
+                      </div>
+                      <div class="audio-playback col" style="display:none;">
+                        <audio controls="controls"></audio>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="container">
+              <div class="card">
+                <div class="card-header">
+                  OOO
+                  <a class="btn btn-outline-info float-sm-right sample_audio_link">
+                      उदाहरण सुने / Play Example
+                      <audio class="sample_audio">
+                        <source src="sample_audios/ooo-sample.ogg" type="audio/ogg">
+                        &lt;&lt;your browser does not support audio player&gt;&gt;
+                      </audio>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <p> Press the record button and say 'ooo' for as long as you can (i.e. same as the 'ooo' sound in the word 'boot' or 'food'). 
+                  <input name="audio_ooo" id="oooFile" type="file" style="visibility: hidden; white-space: nowrap;">
+                  <br>Or alternatively, <button class="btn btn-outline-dark oooUploadBtn" onclick="event.preventDefault(); $('#oooFile').click();"><i class="fas fa-upload"> Upload</i></button> manually.</p>
+                  <div id="oooRecordControl">
+                    <div class="row justify-content-start">
+                      <div class="col">
+                        <button type="button" class="btn btn-outline-dark recorder"><i class="fas fa-microphone"> Record</i></button>
+                      </div>
+                      <div class="recording-indicator col" style="display:none; white-space: nowrap;">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        Recording
+                      </div>
+                      <div class="audio-playback col" style="display:none;">
+                        <audio controls="controls"></audio>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="container">
+              <div class="card">
+                <div class="card-header">
+                  Count
+                  <a class="btn btn-outline-info float-sm-right sample_audio_link">
+                      उदाहरण सुने / Play Example
+                      <audio class="sample_audio">
+                        <source src="sample_audios/count-sample.ogg" type="audio/ogg">
+                        &lt;&lt;your browser does not support audio player&gt;&gt;
+                      </audio>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <p> Click the microphone to start recording, count from 1 to 20, then click again to stop recording. 
+                  <input name="audio_count" id="countFile" type="file" style="visibility: hidden; white-space: nowrap;">
+                  <br>Or alternatively, <button class="btn btn-outline-dark countUploadBtn" onclick="event.preventDefault(); $('#countFile').click();"><i class="fas fa-upload"> Upload</i></button> manually.</p>
+                  <div id="countRecordControl">
+                    <div class="row justify-content-start">
+                      <div class="col">
+                        <button type="button" class="btn btn-outline-dark recorder"><i class="fas fa-microphone"> Record</i></button>
+                      </div>
+                      <div class="recording-indicator col" style="display:none; white-space: nowrap;">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        Recording
+                      </div>
+                      <div class="audio-playback col" style="display:none;">
+                        <audio controls="controls"></audio>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="container">
+              <div class="card">
+                <div class="card-header">
+                  Alphabet
+                  <a class="btn btn-outline-info float-sm-right sample_audio_link">
+                      उदाहरण सुने / Play Example
+                      <audio class="sample_audio">
+                        <source src="sample_audios/alphabet-sample.ogg" type="audio/ogg">
+                        &lt;&lt;your browser does not support audio player&gt;&gt;
+                      </audio>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <p> Press the record button and say the alphabet from a to z (a b c d e f g h i j k l m n o p q r s t u v w x y z).
+                  <input name="audio_az" id="azFile" type="file" style="visibility: hidden; white-space: nowrap;">
+                  <br>Or alternatively, <button class="btn btn-outline-dark alphabetUploadBtn" onclick="event.preventDefault(); $('#azFile').click();"><i class="fas fa-upload"> Upload</i></button> manually.</p>
+                  <div id="alphabetRecordControl">
+                    <div class="row justify-content-start">
+                      <div class="col">
+                        <button type="button" class="btn btn-outline-dark recorder"><i class="fas fa-microphone"> Record</i></button>
+                      </div>
+                      <div class="recording-indicator col" style="display:none; white-space: nowrap;">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        Recording
+                      </div>
+                      <div class="audio-playback col" style="display:none;">
+                        <audio controls="controls"></audio>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="container">
+              <div class="card">
+                <div class="card-header">
+                  Declaration
+                </div>
+                <div class="card-body">
+                  <p> By clicking the submit button, I understand its purpose and agree to submitting this data (including voice recordings) for research purpose.</p>
+                  <button id="submitFormButton" type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </div>
+      
+      </div>
+    
+      <div id="msgModal" class="modal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="msgModalTitle" class="modal-title">Information</h5>
+                    <button id="msgModalClose1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span id="msgModalBody">
+
                     </span>
-                    <button id="done">Click when Done</button>
+                </div>
+                <div id="msgModalFooter" class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                 </div>
             </div>
         </div>
-        <script src="js/jquery-3.4.1.min.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>    
-        <script src="js/recorder.js"></script>
-        <script>
-            "use strict";
-            let recorded_audio = null;
-            window.AudioContext = window.AudioContext || window.webkitAudioContext;
-            window.URL = window.URL || window.webkitURL;
-            navigator.getUserMedia =
-                navigator.getUserMedia
-                || navigator.webkitGetUserMedia
-                || navigator.mozGetUserMedia
-                || navigator.msGetUserMedia
-                || navigator.mediaDevices.getUserMedia;
-            navigator.cancelAnimationFrame =
-                navigator.cancelAnimationFrame
-                || navigator.webkitCancelAnimationFrame
-                || navigator.mozCancelAnimationFrame;
-            navigator.requestAnimationFrame =
-                navigator.requestAnimationFrame
-                || navigator.webkitRequestAnimationFrame
-                || navigator.mozRequestAnimationFrame;
+      </div>
 
-                let createRecorder = function(div, callback){
-                    let recording = false;
-                    let rec = null;
-                    let ctx = null;
-                    let stream = null;
-                    let btn = div.find('a');
-                    let audio = div.find('audio');
-                    let audioInd = div.find('.audio-playback')
-                    let ind = div.find('.recording-indicator');
+      <div id="wait" class="row" style="background: rgba(33, 33, 33, 0.75); color: #ffffff; display: none; width: 100%; height: 100%; top: 0px; left: 0px; position: fixed; z-index: 10000; text-align: center;">
+        <div class="col-12 align-self-center">
+          <h3>Uploading Data, Please Wait...</h3>
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+	
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>    
+    <script src="js/recorder.js"></script>
+    <script src="js/for_recording2.js"></script>
+    
+    <script>
+      $(document).ready(function(){
+        $(".sample_audio_link").on('click', function(evt){
+          evt.preventDefault();
+          var otherAudios = $('audio');
+          var currentAudioTag = $(evt.target).children()[0];
+          for(var i=0; i<otherAudios.length; i++){
+            var thisAudio = otherAudios[ i];
+            if ((thisAudio != currentAudioTag) && (thisAudio.duration > 0 && !thisAudio.paused)){
+              thisAudio.pause();
+              thisAudio.currentTime = 0;
+            }
+          } 
+          if (currentAudioTag.duration > 0 && !currentAudioTag.paused) {
+            currentAudioTag.pause();
+            currentAudioTag.currentTime = 0;
+          } else {
+            currentAudioTag.play();
+          }
+        });
+        $('#submitFormButton').click(function(evt){
+            evt.preventDefault();
+            // validate form
+            var tempIDElem = $('input[name="tempID"]')[0];
+            if(!tempIDElem || tempIDElem.value==0){
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Sorry, an error occured and you cannot submit this page. Please retry.</div>'
+                $('#msgModal').modal();
+                return;
+            }
+            var tempID = tempIDElem.value;
+            if (audio_cough == null || $("#coughFile")[0].files.length==0){
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload cough sound to continue.</div>'
+                $('#msgModal').modal();
+                return;
+            }
+            if (audio_aaa == null || $("#aaaFile")[0].files.length==0){
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload aaa sound to continue.</div>'
+                $('#msgModal').modal();
+                return;
+            }
+            if (audio_eee == null || $("#eeeFile")[0].files.length==0){
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload eee sound to continue.</div>'
+                $('#msgModal').modal();
+                return;
+            }
+            if (audio_ooo == null || $("#oooFile")[0].files.length==0){
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload ooo sound to continue.</div>'
+                $('#msgModal').modal();
+                return;
+            }
+            if (audio_count == null || $("#countFile")[0].files.length==0){
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload counting sound (1 to 20) to continue.</div>'
+                $('#msgModal').modal();
+                return;
+            }
+            if (audio_az == null || $("#azFile")[0].files.length==0){
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload alphabet sound (a to z) to continue.</div>'
+                $('#msgModal').modal();
+                return;
+            }
+            var fd = new FormData();
+            fd.set("tempID", tempID);
+            if (audio_cough != null){
+                fd.set("audio_cough",audio_cough);
+            }
+            if(audio_count != null){
+                fd.set("audio_count",audio_count);
+            }
+            if(audio_aaa != null){
+                fd.set("audio_aaa",audio_aaa);
+            }
+            if(audio_eee != null){
+                fd.set("audio_eee",audio_eee);
+            }
+            if(audio_ooo != null){
+                fd.set("audio_ooo",audio_ooo);
+            }
+            if(audio_az != null){
+                fd.set("audio_az",audio_az);
+            }
 
-                    let startRecording = function(){
-                        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
-                            navigator.mediaDevices.getUserMedia(
-                            {
-                                "audio": true
-                            }).then(streamSuccess).catch(streamFail);
-                        }else{
-                            navigator.getUserMedia(
-                            {
-                                "audio": true
-                            }, streamSuccess, streamFail);
-                        }
-                    };
-                    let streamSuccess = function(theStream){
-                        stream = theStream;
-                        recording = true;
-                        ctx = new AudioContext();
-                        let src = ctx.createMediaStreamSource(stream);
-                        rec = new Recorder( src , {numChannels: 1});
-                        rec.clear();
-                        rec.record();
-                        btn.addClass('recording');
-                        btn[0].innerHTML = '<i class="fas fa-stop"></i>';
-                        ind.show();
-                        recording=true;
-                        audioInd.hide();
-                    };
-
-                    let streamFail = function(e){
-                        alert('Error occured while trying to record audio, please check if mic is connected and enabled.');
-                    };
-
-                    let stopRecording = function(){
-                        rec.stop();
-                        stream.getTracks().forEach(function(track){
-                            track.stop()
-                        });
-                        ctx.close();
-                        ctx = null;
-                        rec.exportWAV(streamDone);
-                    };
-
-                    let streamDone = function(blob){
-                        const audioUrl = URL.createObjectURL(blob);
-                        audioInd.show();
-                        audio.get(0).src = audioUrl;
-                        audio.get(0).load();
-                        $('#msg')[0].innerText += blob.size + " " + blob.type;
-                        callback(blob);
-                        btn.removeClass('recording');
-                        btn[0].innerHTML = '<i class="fas fa-microphone"></i>';
-                        ind.hide();
-                        recording=false;
-                    };
-
-                    let toggleRecording=function(){
-                        if(recording){
-                            stopRecording();
-                        }else{
-                            startRecording();
-                        }
-                    };
-                    btn.click(toggleRecording);
-                };
-                createRecorder(
-                    $('#divControl'),
-                    function(blob){
-                        recorded_audio=blob;
-                        $('#msg')[0].innerText = "from control callback: " + recorded_audio.size + " " + recorded_audio.type;
-                    }
-                );
-                $(document).ready(function(){
-                    $('#done').click(function(evt){
-                        $('#msg')[0].innerText = "from external func: " + recorded_audio.size + " " + recorded_audio.type;
-                    });
-                });
-        </script>
-    </body>
+            // set from uploaded audio file if provided
+            if ($("#coughFile")[0].files.length==1){
+                var file = $("#coughFile")[0].files[0]
+                fd.set('audio_cough', file, file.name);
+            }
+            if ($("#aaaFile")[0].files.length==1){
+                var file = $("#aaaFile")[0].files[0]
+                fd.set('audio_aaa', file, file.name);
+            }
+            if ($("#eeeFile")[0].files.length==1){
+                var file = $("#eeeFile")[0].files[0]
+                fd.set('audio_eee', file, file.name);
+            }
+            if ($("#oooFile")[0].files.length==1){
+                var file = $("#oooFile")[0].files[0]
+                fd.set('audio_ooo', file, file.name);
+            }
+            if ($("#countFile")[0].files.length==1){
+                var file = $("#countFile")[0].files[0]
+                fd.set('audio_count', file, file.name);
+            }
+            if ($("#azFile")[0].files.length==1){
+                var file = $("#azFile")[0].files[0]
+                fd.set('audio_az', file, file.name);
+            }
+            $.ajax({
+                url: '/upload.php',
+                type: 'POST',
+                data: fd,
+                processData: false,
+                contentType: false,
+            }).done(function(data){
+                console.log(data);
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-success">'+data+'</div>'
+                $('#msgModalFooter')[0].innerHTML = '<button type="button" class="btn btn-danger" onclick="location.reload()">Exit page</button>'
+                $('#msgModal').modal();
+                $('#msgModalClose1').hide();
+                $("#coughFile")[0].value = "";
+                $("#aaaFile")[0].value = "";
+                $("#eeeFile")[0].value = "";
+                $("#oooFile")[0].value = "";
+                $("#countFile")[0].value = "";
+                $("#azFile")[0].value = "";
+                audio_aaa = null;audio_eee = null;audio_ooo = null;
+                audio_cough = null; audio_count = null; audio_az = null;
+                $('.audio-playback').css('display', 'none');
+            }).fail(function(err){
+                console.log(err);
+                $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Error: '+err+'</div>'
+                $('#msgModal').modal();
+                return;
+            });
+        });
+        $(document).ajaxStart(function () {
+           $('#wait').show();
+        });
+        $(document).ajaxStop(function () {
+            $('#wait').hide();
+        });
+        $(document).ajaxError(function () {
+            $('#wait').hide();
+        }); 
+      });
+    </script>
+</body>
+</html>

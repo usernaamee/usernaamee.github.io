@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>COVID-19 Quest</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/all.css">
+        <style>
+            html, body {
+                 height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid" style="height: 100%">
+            <div class="row h-100">
+                <div class="col-sm-12 align-self-center text-center">
+                    <div id="divControl">
+                        <a class="btn btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                        <span class="audio-playback" style="display:none;">
+                        <audio class="recorded_audio"></audio>
+                            <button class="btn btn-sm btn-info play_recording" style="margin: 2px;">
+                                play
+                            </button>
+                        </span>
+                    </div>
+                    <span id="msg">
+                    </span>
+                    <button id="done">Click when Done</button>
+                </div>
+            </div>
+        </div>
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>    
+        <script src="js/recorder.js"></script>
+        <script>
+            "use strict";
+            let recorded_audio = null;
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            window.URL = window.URL || window.webkitURL;
+            navigator.getUserMedia =
+                navigator.getUserMedia
+                || navigator.webkitGetUserMedia
+                || navigator.mozGetUserMedia
+                || navigator.msGetUserMedia
+                || navigator.mediaDevices.getUserMedia;
+            navigator.cancelAnimationFrame =
+                navigator.cancelAnimationFrame
+                || navigator.webkitCancelAnimationFrame
+                || navigator.mozCancelAnimationFrame;
+            navigator.requestAnimationFrame =
+                navigator.requestAnimationFrame
+                || navigator.webkitRequestAnimationFrame
+                || navigator.mozRequestAnimationFrame;
+
+                let createRecorder = function(div, callback){
+                    let recording = false;
+                    let rec = null;
+                    let ctx = null;
+                    let stream = null;
+                    let btn = div.find('a');
+                    let audio = div.find('audio');
+                    let audioInd = div.find('.audio-playback')
+                    let ind = div.find('.recording-indicator');
+
+                    let startRecording = function(){
+                        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+                            navigator.mediaDevices.getUserMedia(
+                            {
+                                "audio": true
+                            }).then(streamSuccess).catch(streamFail);
+                        }else{
+                            navigator.getUserMedia(
+                            {
+                                "audio": true
+                            }, streamSuccess, streamFail);
+                        }
+                    };
+                    let streamSuccess = function(theStream){
+                        stream = theStream;
+                        recording = true;
+                        ctx = new AudioContext();
+                        let src = ctx.createMediaStreamSource(stream);
+                        rec = new Recorder( src , {numChannels: 1});
+                        rec.clear();
+                        rec.record();
+                        btn.addClass('recording');
+                        btn[0].innerHTML = '<i class="fas fa-stop"></i>';
+                        ind.show();
+                        recording=true;
+                        audioInd.hide();
+                    };
+
+                    let streamFail = function(e){
+                        alert('Error occured while trying to record audio, please check if mic is connected and enabled.');
+                    };
+
+                    let stopRecording = function(){
+                        rec.stop();
+                        stream.getTracks().forEach(function(track){
+                            track.stop()
+                        });
+                        ctx.close();
+                        ctx = null;
+                        rec.exportWAV(streamDone);
+                    };
+
+                    let streamDone = function(blob){
+                        const audioUrl = URL.createObjectURL(blob);
+                        audioInd.show();
+                        audio.get(0).src = audioUrl;
+                        audio.get(0).load();
+                        $('#msg')[0].innerText += blob.size + " " + blob.type;
+                        callback(blob);
+                        btn.removeClass('recording');
+                        btn[0].innerHTML = '<i class="fas fa-microphone"></i>';
+                        ind.hide();
+                        recording=false;
+                    };
+
+                    let toggleRecording=function(){
+                        if(recording){
+                            stopRecording();
+                        }else{
+                            startRecording();
+                        }
+                    };
+                    btn.click(toggleRecording);
+                };
+                createRecorder(
+                    $('#divControl'),
+                    function(blob){
+                        recorded_audio=blob;
+                        $('#msg')[0].innerText = "from control callback: " + recorded_audio.size + " " + recorded_audio.type;
+                    }
+                );
+                $(document).ready(function(){
+                    $('#done').click(function(evt){
+                        $('#msg')[0].innerText = "from external func: " + recorded_audio.size + " " + recorded_audio.type;
+                    });
+                });
+        </script>
+    </body>
