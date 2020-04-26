@@ -27,6 +27,7 @@
                     </div>
                     <span id="msg">
                     </span>
+                    <button id="done">Click when Done</button>
                 </div>
             </div>
         </div>
@@ -135,5 +136,10 @@
                         $('#msg')[0].innerText = "from control callback: " + recorded_audio.size + " " + recorded_audio.type;
                     }
                 );
+                $(document).ready(function(){
+                    $('#done').click(function(evt){
+                        $('#msg')[0].innerText = "from external func: " + recorded_audio.size + " " + recorded_audio.type;
+                    });
+                });
         </script>
     </body>
