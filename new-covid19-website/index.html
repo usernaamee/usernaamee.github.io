@@ -310,32 +310,32 @@
                 return;
             }
             var tempID = tempIDElem.value;
-            if (audio_cough == null || $("#coughFile")[0].files.length==0){
+            if (audio_cough == null && $("#coughFile")[0].files.length==0){
                 $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload cough sound to continue.</div>'
                 $('#msgModal').modal();
                 return;
             }
-            if (audio_aaa == null || $("#aaaFile")[0].files.length==0){
+            if (audio_aaa == null && $("#aaaFile")[0].files.length==0){
                 $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload aaa sound to continue.</div>'
                 $('#msgModal').modal();
                 return;
             }
-            if (audio_eee == null || $("#eeeFile")[0].files.length==0){
+            if (audio_eee == null && $("#eeeFile")[0].files.length==0){
                 $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload eee sound to continue.</div>'
                 $('#msgModal').modal();
                 return;
             }
-            if (audio_ooo == null || $("#oooFile")[0].files.length==0){
+            if (audio_ooo == null && $("#oooFile")[0].files.length==0){
                 $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload ooo sound to continue.</div>'
                 $('#msgModal').modal();
                 return;
             }
-            if (audio_count == null || $("#countFile")[0].files.length==0){
+            if (audio_count == null && $("#countFile")[0].files.length==0){
                 $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload counting sound (1 to 20) to continue.</div>'
                 $('#msgModal').modal();
                 return;
             }
-            if (audio_az == null || $("#azFile")[0].files.length==0){
+            if (audio_az == null && $("#azFile")[0].files.length==0){
                 $('#msgModalBody')[0].innerHTML = '<div class="alert alert-danger">Please record or upload alphabet sound (a to z) to continue.</div>'
                 $('#msgModal').modal();
                 return;
