@@ -131,8 +131,8 @@
                 createRecorder(
                     $('#divControl'),
                     function(blob){
-                        console.log(blob);
                         recorded_audio=blob;
+                        $('#msg')[0].innerText = "from control callback: " + recorded_audio.size + " " + recorded_audio.type;
                     }
                 );
         </script>
