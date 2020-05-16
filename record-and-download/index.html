@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>NoUpload: Record & Download</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/all.css">
+        <style>
+            html, body {
+                 height: 100%;
+            }
+            @keyframes glowing {
+                0% { background-color: #37a2b8; box-shadow: 0 0 5px #0acae7; }
+                25% { background-color: #27a2b8; box-shadow: 0 0 7px #0acae7; }
+                50% { background-color: #17a2b8; box-shadow: 0 0 20px #0acae7; }
+                75% { background-color: #27a2b8; box-shadow: 0 0 7px #0acae7; }
+                100% { background-color: #37a2b8; box-shadow: 0 0 5px #0acae7; }
+            }
+            .recording {
+                animation: glowing 1000ms infinite;
+            }
+        </style>
+    </head>
+    <!-- <body style="height: 100%; background-color:rgba(0, 0, 0, 0.4); "> -->
+    <body style="height: 100%; background-color:#272727;">
+        <div class="container-fluid" style="height: 100%">
+            <!-- <span class="qpage greetings" style="display: none;"> -->
+            <span class="qpage greetings">
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 360px;">
+                                <div style="color: white; text-shadow: rgba(0, 0, 0, 0.25) 3px 1px 1px; background-color: #4aaaa5; padding: 5px">
+                                    <h1>NoUpload</h1>
+                                    <h3 style="color:#333">
+                                        Secure Text & Voice Sample Collection Tool
+                                    </h3>
+                                </div>
+                                <br>
+                                <ul style="text-align: justify; margin-right: 20px">
+                                    <li>This tool allows you to input text and voice samples without needing to uploading them to a server.</li>
+                                    <li>Everything is recorded and stored locally.</li>
+                                    <li>It allows you to download the recorded data as a single zip file.</li>
+                                    <li>Single zip file can then be shared through email/whatsapp, etc.</li>
+                                </ul>
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <button class="btn btn-lg btn-warning next-btn" style="border: 5px double white;">Begin</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+
+            <span class="qpage basicinfo" style="display: none;">
+            <!-- <span class="qpage basicinfo"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 360px;">
+                                <div class="card-header">
+                                    <h2>Basic Info</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <form class="needs-validation" novalidate>
+                                        <div class="form-group" style="text-align: justify; margin: 10px;">
+                                            <input type="text" name="name" id="name" class="form-control" placeholder="Your Name" required>
+                                            <div class="invalid-feedback">
+                                                Please enter your name.
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="text-align: justify; margin: 10px;">
+                                            <input type="text" name="designation" id="designation" class="form-control" placeholder="Your Designation" required>
+                                            <div class="invalid-feedback">
+                                                Please enter your designation.
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="text-align: justify; margin: 10px;">
+                                            <input type="number" name="empid" id="empid" class="form-control" placeholder="Employee ID" required>
+                                            <div class="invalid-feedback">
+                                                Please enter your employee ID.
+                                            </div>
+                                        </div>
+                                        <div class="form-check" style="text-align: justify; margin: 10px;">
+                                            <input type="checkbox" name="mask" id="mask" class="form-check-input">
+                                            <label class="form-check-label" for="mask">Not wearing mask.</label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <!-- <button class="btn btn-lg btn-secondary prev-btn">Previous</button> -->
+                                    <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+
+
+            <span class="qpage instructions" style="display: none;">
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 360px;">
+                                <h2 class="alert alert-warning">Attention!</h2>
+                                <br>
+                                <ul style="text-align: justify; margin-right: 20px">
+                                    <li>While recording, please hold your phone (microphone end) approx. 12-20cm away from your mouth.</li>
+                                    <li>Speak at a normal pace and with a normal volume.</li>
+                                    <li>You can listen to the recorded audio, and re-record if not satisfied.</li>
+                                </ul>
+                                <br>
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <button class="btn btn-lg btn-secondary prev-btn">Previous</button>
+                                    <button class="btn btn-lg btn-primary next-btn">Proceed to Record</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+
+            <span class="qpage questionnaire_1" style="display: none;">
+            <!-- <span class="qpage questionnaire_1"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 360px;">
+                                <div class="card-header">
+                                    <h2>Recording (1/2)</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <form class="needs-validation" novalidate>
+                                        <div>
+                                            <b>Task:</b> Record voice sample containing your <b class="text text-danger">Name & Designation</b>.
+                                        </div>
+                                        <ol>
+                                            <li>Press mic button to start recording.</li> 
+                                            <li>State your name and designation</li>
+                                            <li>Press stop button to finish recording.</li>
+                                            <li>Listen to the recording. If correct, click next, else press mic button to try again.</li>
+                                        </ol>
+                                        <center>
+                                            <div id="namedesRecordControl">
+                                                <a class="btn btn-lg btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                <div class="form-group">
+                                                    <input class="form-control audioText" type="text" style="display: none" required>
+                                                    <div class="invalid-feedback">
+                                                        Please record your voice first.
+                                                    </div>
+                                                </div>
+                                                <span class="audio-playback" style="display:none;">
+                                                    <audio class="recorded_audio"></audio>
+                                                    <button class="btn btn-outline-dark play_recording" style="margin-top: 5px;">
+                                                        play recording
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </center>
+                                    </form>
+                                </div>
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <button class="btn btn-lg btn-secondary prev-btn">Previous</button>
+                                    <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+
+            <span class="qpage questionnaire_2" style="display: none;">
+            <!-- <span class="qpage questionnaire_2"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 360px;">
+                                <div class="card-header">
+                                    <h2>Recording (2/2)</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <form class="needs-validation" novalidate>
+                                        <div>
+                                            <b>Task:</b> Record voice sample containing your <b class="text text-danger">Employee ID</b>.
+                                        </div>
+                                        <ol>
+                                            <li>Press mic button to start recording.</li> 
+                                            <li>Say your EmployeeID digits one by one. Eg: for ID 123, say One Two Three.</li>
+                                            <li>Press stop button to finish recording.</li>
+                                            <li>Listen to the recording. If correct, click next, else press mic button to try again.</li>
+                                        </ol>
+                                        <center>
+                                            <div id="empidRecordControl">
+                                                <a class="btn btn-lg btn-outline-info recorder"><i class="fas fa-microphone"></i></a>
+                                                <div class="form-group">
+                                                    <input class="form-control audioText" type="text" style="display: none" required>
+                                                    <div class="invalid-feedback">
+                                                        Please record your voice first.
+                                                    </div>
+                                                </div>
+                                                <span class="audio-playback" style="display:none;">
+                                                    <audio class="recorded_audio"></audio>
+                                                    <button class="btn btn-outline-dark play_recording" style="margin-top: 5px;">
+                                                        play recording
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </center>
+                                    </form>
+                                </div>
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <button class="btn btn-lg btn-secondary prev-btn">Previous</button>
+                                    <button class="btn btn-lg btn-primary next-btn-with-validation">Next</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+
+            <span class="qpage final_page" style="display: none;">
+            <!-- <span class="qpage final_page"> -->
+                <div class="row h-100">
+                    <div class="col-sm-12 align-self-center text-center">
+                        <center>
+                            <div class="card" style="width: 360px;">
+                                <div class="card-header">
+                                    <h2>Complete!</h2>
+                                </div>
+                                <div class="card-body" style="text-align: justify;">
+                                    <ul>
+                                        <li>You have completed the recordings.</li>
+                                        <li>Your data is ready for download.</li>
+                                        <li>You can download your data (as a zip file) by clicking on the Download button below.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <button class="btn btn-lg btn-primary download_data">Download</button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </span>
+            <a id="downloadAnchorElem" style="visibility: hidden; position: absolute; left: 0px; "></a>
+        </div>
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>    
+        <script src="js/recorder.js"></script>
+        <script src="js/for_recording.js"></script>
+        <script src="js/jszip.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('.next-btn').click(function(evt){
+                    evt.preventDefault();
+                    var thisPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+                    var nextPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling;
+                    $(thisPage).hide();
+                    $(nextPage).show();
+                });
+                $('.next-btn-with-validation').click(function(evt){
+                    evt.preventDefault();
+                    // check if all inputs in current page are valid
+                    var thisPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+                    var thisForm = $(thisPage).find('form.needs-validation')[0];
+                    thisForm.classList.add('was-validated');
+                    if(!thisForm.checkValidity()){
+                        evt.stopPropagation();
+                        return;
+                    }
+                    var nextPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling;
+                    $(thisPage).hide();
+                    $(nextPage).show();
+                });
+                $('.prev-btn').click(function(evt){
+                    evt.preventDefault();
+                    var thisPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+                    var prevPage = evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.previousElementSibling;
+                    $(thisPage).hide();
+                    $(prevPage).show();
+                });
+                $('.play_recording').click(function(evt){
+                    evt.preventDefault();
+                    var currentAudioTag = $(evt.target)[0].previousElementSibling;
+                    if (currentAudioTag.duration > 0 && !currentAudioTag.paused) {
+                        currentAudioTag.pause();
+                        currentAudioTag.currentTime = 0;
+                        $(evt.target)[0].innerText = "play recording";
+                    } else {
+                        currentAudioTag.play();
+                        $(evt.target)[0].innerText = "stop playing";
+                    }
+                });
+                $('.recorded_audio').on('ended', function(evt){
+                    var btn = $(evt.target)[0].nextElementSibling;
+                    btn.innerText = "play recording";
+                });
+                $('.download_data').click(function(evt){
+                    evt.preventDefault();
+                    var info = {};
+                    var name = $('#name').val();
+                    var designation = $('#designation').val();
+                    var employee_id = $('#empid').val();
+                    var not_wearing_mask = $('#mask').prop('checked');
+                    info.name = name; info.designation = designation; info.employee_id = employee_id;
+                    info.not_wearing_mask = not_wearing_mask; 
+                    var ts = 0;
+                    try{
+                        ts = new Date().valueOf();
+                    }
+                    catch(err){
+                        console.log('Error generating timestamp');
+                        console.log(err);
+                    }
+                    
+                    console.log(info);
+                    var dlAnchorElem = $('#downloadAnchorElem')[0];
+                    var zip = JSZip();
+                    zip.file('info.json', JSON.stringify(info));
+                    zip.file('name_and_desig.wav', audio_namedes);
+                    zip.file('empid.wav', audio_empid);
+                    zip.generateAsync({type:"blob"})
+                    .then(function(content) {
+                        dlAnchorElem.setAttribute("href", URL.createObjectURL(content));
+                        dlAnchorElem.setAttribute("download", "my-data-"+ts+".zip");
+                        dlAnchorElem.click();
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
