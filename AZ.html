@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720px, initial-scale=1.0">
+    <title>Learn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html, body {
+            height: 100%;
+            font-family: sans-serif;
+        }
+        body {
+            margin: 0;
+        }
+        div{
+            padding: 5px;
+        }
+        table { margin: auto; 
+            height: 100%;
+        }
+        .container{
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card{
+            background-color: aqua;
+            width: 400px;
+            height: 400px;
+            border-radius: 2;
+            border: 1px;
+            border-style: solid;
+            text-align: center;
+            display:table;
+        }
+        .txt{
+            text-align: center;
+            text-emphasis: bold;
+            font-size: 24pt;
+            width: 98%;
+        }
+        button{
+            font-size: 18pt;
+            height: 32px;
+        }
+        #nextVoice{
+            border: 0;
+            background: none;
+            box-shadow: none;
+            border-radius: 0px;
+            width: 100%;
+        }
+        label{
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <table border="1px">
+                <tr>
+                    <td colspan=2>
+                        <input type="text" class="txt" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="keyboard">
+                            <button>A</button>
+                            <button>B</button>
+                            <button>C</button>
+                            <button>D</button>
+                            <button>E</button>
+                            <button>F</button>
+                            <button>G</button>
+                            <button>H</button>
+                            <button>I</button>
+                            <button>J</button>
+                            <br>
+                            <button>K</button>
+                            <button>L</button>
+                            <button>M</button>
+                            <button>N</button>
+                            <button>M</button>
+                            <button>O</button>
+                            <button>P</button>
+                            <button>Q</button>
+                            <button>R</button>
+                            <br>
+                            <button>S</button>
+                            <button>T</button>
+                            <button>U</button>
+                            <button>V</button>
+                            <button>W</button>
+                            <button>X</button>
+                            <button>Y</button>
+                            <button>Z</button>
+                            <button>&nbsp;</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="rate">RATE</label>
+                    </td>
+                    <td>
+                        <input type="range" min="0.1" max="4" value="0.6" step="0.1" id="rate">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="pitch">PITCH</label>
+                    </td>
+                    <td>
+                        <input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="voices">VOICE</label>
+                    </td>
+                    <td>
+                        <button id="nextVoice">
+                            <i class="fa fa-user"></i> <i class="fa fa-volume-up"></i>
+                        </button>
+                        <select id="voices" style="max-width: 340px;" hidden>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button id="clear">CLEAR <i class="fa fa-trash"></i></button>
+                        <button id="speak">SPEAK <i class="fa fa-volume-up"></i></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            var synth = window.speechSynthesis;
+            var inputTxt = document.querySelector('.txt');
+            var voiceSelect = document.querySelector('select');
+            var pitch = document.querySelector('#pitch');
+            var rate = document.querySelector('#rate');
+            var voices = [];
+            var utterThis = new SpeechSynthesisUtterance();
+            var nextVoiceButton = document.getElementById("nextVoice");
+            var colorList = ['#cdb522', '#e574aa', '#3e9909', '#abb9ca', '#0e4182', '#FAA987', '#E4D3BB', '#E4EBCC', '#9BD0D1', '#049BA9'];
+            var card = document.getElementsByClassName('card')[0];
+            var speakBtn = document.getElementById('speak');
+
+            nextVoiceButton.onclick = function(evt){
+                evt.preventDefault();
+                voiceSelect.selectedIndex = (voiceSelect.selectedIndex + 1) % voiceSelect.length;
+                // console.log(voiceSelect.selectedOptions[0]);
+                nextVoiceButton.style.backgroundColor = colorList[voiceSelect.selectedIndex%colorList.length];
+                card.style.backgroundColor = colorList[(voiceSelect.selectedIndex+1)%colorList.length];
+                speakBtn.click();
+            }
+
+            document.getElementById("keyboard").onclick = function(evt){
+                evt.preventDefault();
+                var char = evt.target.textContent;
+                utterThis.text = char;
+                utterThis.voice = getSelectedVoice();
+                utterThis.pitch = pitch.value;
+                utterThis.rate = rate.value;
+                synth.speak(utterThis);
+                inputTxt.value += char;
+            }
+
+            function getSelectedVoice(){
+                var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+                var selectedVoice = null;
+                for(i = 0; i < voices.length ; i++) {
+                    if(voices[i].name === selectedOption) {
+                        selectedVoice = voices[i];
+                        break;
+                    }
+                }
+                return selectedVoice;
+            }
+
+            function populateVoiceList() {
+                voices = synth.getVoices();
+                for(i = 0; i < voices.length ; i++) {
+                    var option = document.createElement('option');
+                    option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+                    if(voices[i].default) {
+                    option.textContent += ' -- DEFAULT';
+                    }
+                    option.setAttribute('data-lang', voices[i].lang);
+                    option.setAttribute('data-name', voices[i].name);
+                    voiceSelect.appendChild(option);
+                }
+            }
+
+            document.getElementById("clear").onclick = function(evt){
+                evt.preventDefault();
+                inputTxt.value = "";
+                // pitch.value = 1.0;
+                // rate.value = 1.0;
+                // voiceSelect.options.length = 0;
+                // populateVoiceList();
+            }
+
+            document.getElementById("speak").onclick = function(evt){
+                evt.preventDefault();
+                // var utterThis = new SpeechSynthesisUtterance(inputTxt.value);
+                utterThis.text = inputTxt.value;
+                utterThis.voice = getSelectedVoice();
+                utterThis.pitch = pitch.value;
+                utterThis.rate = rate.value;
+                synth.speak(utterThis);
+            }
+
+            populateVoiceList();
+            nextVoiceButton.style.backgroundColor = colorList[voiceSelect.selectedIndex%colorList.length];
+            card.style.backgroundColor = colorList[(voiceSelect.selectedIndex+1)%colorList.length];
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+        });
+        
+    </script>
+</body>
+</html>
