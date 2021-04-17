@@ -80,9 +80,10 @@
         var sentence_arr = [];
         function startUserMedia(stream) {
             var input = audio_context.createMediaStreamSource(stream);
-            recorder = new Recorder(input);
+            recorder = new Recorder(input, {numChannels:1});
         }
         function startRecording(button) {
+            recorder && recorder.clear();
             recorder && recorder.record();
             button.disabled = true;
             button.nextElementSibling.disabled = false;
@@ -125,14 +126,19 @@
         $(document).ready(function(){
             try{
                 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-                navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+                navigator.getUserMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia);
                 window.URL = window.URL || window.webkitURL;
                 audio_context = new AudioContext;
                 // console.log(navigator);
-                navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-                    console.log('No live audio input: ' + e);
-                    console.log(e);
-                });
+                if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+                    navigator.mediaDevices.getUserMedia({"audio": true}).then(startUserMedia).catch(function(e){console.log(e);});
+                }
+                else{
+                    navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+                        console.log('No live audio input: ' + e);
+                        console.log(e);
+                    });
+                }
             }
             catch(e){
                 console.log(e);
