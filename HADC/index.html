@@ -80,7 +80,7 @@
         var audioContext;
         URL = window.URL || window.webkitURL;
         var AudioContext = window.AudioContext || window.webkitAudioContext;
-        var constraints = { audio: true, video:false }
+        var constraints = { audio: audio: {echoCancellation: true, autoGainControl: true, noiseCancellation: true}, video:false }
         function startRecording(button) {
             navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
                 audioContext = new AudioContext();
