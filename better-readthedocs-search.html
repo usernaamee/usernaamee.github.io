@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RTD Search Agent (Standalone)</title>
+    <title>Doc Query Agent (Standalone - OpenAI Lib)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/openai@4/dist/index.browser.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -53,26 +54,27 @@
 
     <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
 
-        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Documentation Query Agent</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Documentation Query Agent (OpenAI Lib)</h1>
 
         <div class="mb-6 p-4 border border-gray-200 rounded-md bg-gray-50">
-            <h2 class="text-lg font-semibold mb-3 text-gray-700">LLM Configuration</h2>
+            <h2 class="text-lg font-semibold mb-3 text-gray-700">LLM Configuration (OpenAI Library)</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label for="llmUrl" class="block text-sm font-medium text-gray-700 mb-1">Base URL</label>
-                    <input type="url" id="llmUrl" value="http://localhost:8080/v1/chat/completions" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="http://localhost:8080/v1">
+                    <label for="llmUrl" class="block text-sm font-medium text-gray-700 mb-1">Base URL (Optional)</label>
+                    <input type="url" id="llmUrl" value="http://localhost:8080/v1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Default: OpenAI / Your Proxy">
+                     <p class="mt-1 text-xs text-gray-500">Overrides default OpenAI URL. Ensure '/chat/completions' is NOT included.</p>
                 </div>
                 <div>
                     <label for="llmApiKey" class="block text-sm font-medium text-gray-700 mb-1">API Key</label>
-                    <input type="password" id="llmApiKey" value="DUMMY_KEY" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Enter API Key if required">
-                    <p class="mt-1 text-xs text-red-600 font-semibold">Warning: Avoid entering sensitive keys in the browser.</p>
+                    <input type="password" id="llmApiKey" value="DUMMY_KEY" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Your OpenAI API Key">
+                    <p class="mt-1 text-xs text-red-600 font-semibold">Required. Avoid entering sensitive keys directly if possible.</p>
                 </div>
                 <div>
                     <label for="llmModel" class="block text-sm font-medium text-gray-700 mb-1">Model Name</label>
-                    <input type="text" id="llmModel" value="local-model" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., local-model">
+                    <input type="text" id="llmModel" value="gpt-3.5-turbo" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="e.g., gpt-4, gpt-3.5-turbo">
                 </div>
             </div>
-             <p class="mt-2 text-xs text-gray-500">Ensure the LLM endpoint URL has CORS configured to allow requests from this page.</p>
+             <p class="mt-2 text-xs text-gray-500">Uses the official OpenAI JS library. Ensure CORS is configured if using a custom Base URL.</p>
         </div>
 
         <div class="mb-6">
@@ -107,12 +109,9 @@
 
     <script>
         /**
-         * Doc Query Agent (Refactored & Combined)
+         * Doc Query Agent (Standalone - OpenAI Library)
          *
-         * This script implements a client-side documentation query agent.
-         * It allows users to load a folder of documentation files (.rst, .txt),
-         * performs keyword-based searches, interacts with an LLM for guidance
-         * and final answers, and displays the results. All in a single HTML file.
+         * Uses the official OpenAI JS library loaded via CDN.
          */
 
         // Create a namespace object to hold the application logic
@@ -124,11 +123,10 @@
                 MAX_SNIPPET_LEN: 500,       // Max length of a single context snippet (approx)
                 MAX_SNIPPETS_INITIAL: 10,   // Max number of snippets to fetch initially
                 MAX_SNIPPETS_REFINED: 8,    // Max snippets after LLM guidance
-                REQUEST_TIMEOUT_MS: 600 * 1000, // Timeout 600 seconds (10 minutes)
-                GUIDANCE_MAX_TOKENS: 1500,   // Limit tokens for the guidance response (keep it short)
+                // Note: Timeout is generally handled by the OpenAI library/server, not explicitly set here.
+                GUIDANCE_MAX_TOKENS: 150,   // Limit tokens for the guidance response
                 FINAL_ANSWER_MAX_TOKENS: 1500, // Limit tokens for the final answer
-                SEARCH_UPDATE_INTERVAL: 100, // Update progress bar every N paragraphs for responsiveness
-                // Reduced stop words list (can be expanded)
+                SEARCH_UPDATE_INTERVAL: 100, // Update progress bar every N paragraphs
                 STOP_WORDS: new Set([
                     "a", "about", "above", "after", "again", "against", "all", "am", "an", "and",
                     "any", "are", "as", "at", "be", "because", "been", "before", "being",
@@ -144,7 +142,6 @@
                     "through", "to", "too", "under", "until", "up", "very", "was", "we", "were",
                     "what", "when", "where", "which", "while", "who", "whom", "why", "with",
                     "would", "you", "your", "yours", "yourself", "yourselves",
-                    // Domain-specific stop words (examples)
                     "using", "get", "set", "configure", "run", "install", "find", "tell", "me", "about",
                     "example", "examples", "file", "files", "folder", "directory", "doc", "docs",
                     "documentation", "page", "section", "chapter", "paragraph"
@@ -153,16 +150,15 @@
 
             // --- Application State ---
             state: {
-                documentStore: {}, // Stores paragraphs: { id: { text: "...", path: "..." } }
+                documentStore: {},
                 nextDocId: 0,
                 isReadingFiles: false,
                 isQuerying: false,
                 isSearching: false,
-                currentReader: null, // To hold the stream reader for cancellation
+                openaiClient: null, // To hold the initialized OpenAI client
             },
 
             // --- DOM Elements ---
-            // Cache DOM elements for performance
             elements: {
                 docFolderInput: null,
                 readingStatusDiv: null,
@@ -178,11 +174,8 @@
             },
 
             // --- Initialization ---
-            /**
-             * Initializes the application by getting DOM elements and setting up event listeners.
-             */
             init() {
-                // Select all necessary DOM elements
+                // Select DOM elements
                 this.elements.docFolderInput = document.getElementById('docFolder');
                 this.elements.readingStatusDiv = document.getElementById('readingStatus');
                 this.elements.userQueryInput = document.getElementById('userQuery');
@@ -199,531 +192,302 @@
                 this.elements.docFolderInput.addEventListener('change', (event) => this.handleFolderSelect(event));
                 this.elements.submitQueryButton.addEventListener('click', () => this.handleSubmitQuery());
 
-                // Set initial state
+                // Add listeners to re-initialize OpenAI client if config changes
+                this.elements.llmApiKeyInput.addEventListener('change', () => this.initializeOpenAIClient());
+                this.elements.llmUrlInput.addEventListener('change', () => this.initializeOpenAIClient());
+
+                // Initial setup
+                this.initializeOpenAIClient(); // Initialize client on load
                 this.updateSubmitButtonState();
                 this.logStatus("Application loaded. Please select documentation folder.");
             },
 
-            // --- Utility Functions ---
-
+            // --- OpenAI Client Initialization ---
             /**
-             * Logs a message to the console and the status log div in the UI.
-             * @param {string} message - The message to log.
-             * @param {boolean} [isError=false] - Whether the message represents an error.
+             * Initializes the OpenAI client instance based on current config values.
              */
-            logStatus(message, isError = false) {
-                if (isError) {
-                    console.error(message);
-                } else {
-                    console.log(message);
+            initializeOpenAIClient() {
+                const apiKey = this.elements.llmApiKeyInput.value;
+                const baseUrl = this.elements.llmUrlInput.value || null; // Use null if empty for default
+
+                if (!apiKey || apiKey === 'DUMMY_KEY') {
+                    this.logStatus("OpenAI API Key is missing or invalid. Please provide a valid key.", true);
+                    this.state.openaiClient = null;
+                    this.updateSubmitButtonState(); // Disable submit if client isn't valid
+                    return;
                 }
 
+                try {
+                    // The OpenAI library is available globally via the script tag
+                    this.state.openaiClient = new OpenAI({
+                        apiKey: apiKey,
+                        baseURL: baseUrl, // Pass null or the URL
+                        dangerouslyAllowBrowser: true // Required for browser usage
+                    });
+                    this.logStatus(`OpenAI client initialized ${baseUrl ? 'with Base URL: ' + baseUrl : 'with default OpenAI URL'}.`);
+                } catch (error) {
+                    this.logStatus(`Error initializing OpenAI client: ${error}`, true);
+                    this.state.openaiClient = null;
+                }
+                this.updateSubmitButtonState(); // Update button state after attempting initialization
+            },
+
+
+            // --- Utility Functions --- (logStatus, clearLog, extractKeywords, etc. remain largely the same)
+
+            logStatus(message, isError = false) {
+                if (isError) console.error(message);
+                else console.log(message);
                 const entry = document.createElement('div');
-                // Sanitize message to prevent basic HTML injection in the log
                 const cleanMessage = String(message).replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 const timestamp = new Date().toLocaleTimeString();
                 entry.innerHTML = `[${timestamp}] ${cleanMessage}`;
-                entry.classList.add('log-entry'); // Base class
-                if (isError) {
-                    entry.classList.add('error'); // Error specific class
-                }
-
-                // Prepend the new log entry
-                if (this.elements.statusLogDiv) { // Ensure element exists
+                entry.classList.add('log-entry');
+                if (isError) entry.classList.add('error');
+                if (this.elements.statusLogDiv) {
                    this.elements.statusLogDiv.insertBefore(entry, this.elements.statusLogDiv.firstChild);
-                } else {
-                    console.warn("Status log element not found when trying to log:", message);
-                }
+                } else { console.warn("Status log element not found:", message); }
             },
 
-            /**
-             * Clears all entries from the status log div.
-             */
-            clearLog() {
-                 if (this.elements.statusLogDiv) {
-                    this.elements.statusLogDiv.innerHTML = '';
-                 }
-            },
+            clearLog() { if (this.elements.statusLogDiv) this.elements.statusLogDiv.innerHTML = ''; },
 
-            /**
-             * Updates the text and disabled state of the submit button based on application state.
-             */
             updateSubmitButtonState() {
-                const btn = this.elements.submitQueryButton;
-                // Ensure button exists before modifying
-                if (!btn) return;
-
+                const btn = this.elements.submitQueryButton; if (!btn) return;
+                // Also disable if OpenAI client isn't initialized
+                const clientReady = !!this.state.openaiClient;
                 const docsLoaded = Object.keys(this.state.documentStore).length > 0;
 
-                btn.disabled = this.state.isReadingFiles || this.state.isSearching || this.state.isQuerying || !docsLoaded;
+                btn.disabled = this.state.isReadingFiles || this.state.isSearching || this.state.isQuerying || !docsLoaded || !clientReady;
 
                 if (this.state.isReadingFiles) btn.textContent = 'Reading Files...';
                 else if (this.state.isSearching) btn.textContent = 'Searching Docs...';
                 else if (this.state.isQuerying) btn.textContent = 'Querying LLM...';
                 else if (!docsLoaded) btn.textContent = 'Load Docs First';
+                else if (!clientReady) btn.textContent = 'Configure API Key';
                 else btn.textContent = 'Ask LLM';
             },
 
-            /**
-             * Extracts potential keywords from a query string.
-             * Removes stop words and short words.
-             * @param {string} query - The user's query.
-             * @returns {string[]} An array of keywords.
-             */
-            extractKeywords(query) {
+            extractKeywords(query) { /* ... (same as before) ... */
                 if (!query) return [];
-                // Match words, convert to lowercase
                 const words = query.toLowerCase().match(/\b\w+\b/g) || [];
-                // Filter out stop words and words shorter than 3 characters
                 return words.filter(word => !this.config.STOP_WORDS.has(word) && word.length > 2);
             },
 
-            /**
-             * Splits text into paragraphs based on double line breaks.
-             * @param {string} text - The text content of a file.
-             * @returns {string[]} An array of paragraphs (non-empty strings).
-             */
-            splitIntoParagraphs(text) {
+            splitIntoParagraphs(text) { /* ... (same as before) ... */
                 if (!text) return [];
-                // Split by one or more empty lines (handles different line ending combinations)
                 return text.split(/\r?\n\s*\r?\n/)
-                           .map(p => p.trim()) // Remove leading/trailing whitespace from each paragraph
-                           .filter(p => p.length > 5); // Filter out very short paragraphs/empty strings
+                           .map(p => p.trim())
+                           .filter(p => p.length > 5);
             },
 
-            /**
-             * Removes <think>...</think> blocks from a string, including multi-line blocks.
-             * Also trims whitespace around the removed blocks and the final result.
-             * @param {string} text - The input text potentially containing think blocks.
-             * @returns {string} - The text with think blocks removed.
-             */
-            stripThinkTags(text) {
+            stripThinkTags(text) { /* ... (same as before) ... */
                 if (!text) return "";
                 const trimmedText = text.trim();
-                // Regex: \s*<think>.*?<\/think>\s*
-                // \s* - Matches optional whitespace before the opening tag
-                // <think>  - Matches the opening tag
-                // .*?      - Matches any character (including newline) non-greedily
-                // </think> - Matches the closing tag
-                // \s* - Matches optional whitespace after the closing tag
-                // gs flags - g: global (all occurrences), s: dotall (. matches newline)
                 return trimmedText.replace(/\s*<think>.*?<\/think>\s*/gs, '').trim();
             },
 
-            /**
-             * Updates the search progress bar.
-             * @param {number} current - The number of items processed.
-             * @param {number} total - The total number of items.
-             */
-            updateSearchProgress(current, total) {
-                if (!this.elements.searchProgressBar) return; // Check if element exists
-                if (total <= 0) {
-                    this.elements.searchProgressBar.style.width = '0%';
-                    return;
-                }
+            updateSearchProgress(current, total) { /* ... (same as before) ... */
+                if (!this.elements.searchProgressBar) return;
+                if (total <= 0) { this.elements.searchProgressBar.style.width = '0%'; return; }
                 const progress = Math.min(100, Math.round((current / total) * 100));
                 this.elements.searchProgressBar.style.width = `${progress}%`;
             },
 
-            // --- File Reading and Storing ---
+            // --- File Reading and Storing --- (handleFolderSelect, readFileContent, initializeDocumentStore remain the same)
 
-            /**
-             * Resets the document store and related state variables.
-             */
-            initializeDocumentStore() {
+            initializeDocumentStore() { /* ... (same as before) ... */
                 this.state.documentStore = {};
                 this.state.nextDocId = 0;
                 this.logStatus("Document store initialized.");
             },
 
-            /**
-             * Handles the selection of a folder, reads relevant files, and stores paragraphs.
-             * @param {Event} event - The file input change event.
-             */
-            async handleFolderSelect(event) {
+            async handleFolderSelect(event) { /* ... (same as before) ... */
                 const files = event.target.files;
-                if (!files || files.length === 0) {
-                    this.logStatus("No folder selected or folder empty.", true);
-                    return;
-                }
-
-                this.state.isReadingFiles = true;
-                this.updateSubmitButtonState();
-                this.initializeDocumentStore(); // Clear previous documents
-                if (this.elements.readingStatusDiv) {
-                    this.elements.readingStatusDiv.textContent = `Reading ${files.length} file entries...`;
-                }
-                this.logStatus(`Starting to read ${files.length} file entries...`);
-                this.clearLog(); // Clear log for new session
-
-                let processedFileCount = 0;
-                let storedParagraphCount = 0;
-                const promises = [];
-                const startTime = performance.now();
-
+                if (!files || files.length === 0) { this.logStatus("No folder selected.", true); return; }
+                this.state.isReadingFiles = true; this.updateSubmitButtonState();
+                this.initializeDocumentStore();
+                if (this.elements.readingStatusDiv) this.elements.readingStatusDiv.textContent = `Reading ${files.length} entries...`;
+                this.logStatus(`Starting to read ${files.length} file entries...`); this.clearLog();
+                let processedFileCount = 0, storedParagraphCount = 0;
+                const promises = [], startTime = performance.now();
                 for (const file of files) {
-                    // webkitRelativePath is non-standard but common for folder uploads
                     const filePath = file.webkitRelativePath || file.name;
-
-                    // Process only .rst and .txt files
                     if (filePath && (file.name.endsWith('.rst') || file.name.endsWith('.txt'))) {
                         promises.push(
                             this.readFileContent(file).then(({ path, content }) => {
                                 if (content) {
                                     const paragraphs = this.splitIntoParagraphs(content);
-                                    if (paragraphs.length === 0) {
-                                        this.logStatus(`Warning: No paragraphs found in ${path} after splitting.`);
-                                    }
+                                    if (paragraphs.length === 0) this.logStatus(`Warning: No paragraphs in ${path}.`);
                                     paragraphs.forEach(para => {
-                                        const docId = this.state.nextDocId++;
-                                        this.state.documentStore[docId] = { text: para, path: path };
+                                        this.state.documentStore[this.state.nextDocId++] = { text: para, path: path };
                                         storedParagraphCount++;
                                     });
                                     processedFileCount++;
-                                } else {
-                                    this.logStatus(`Warning: Empty content read from ${path}`);
-                                }
-                            }).catch(error => this.logStatus(`Error reading file ${filePath}: ${error}`, true))
+                                } else { this.logStatus(`Warning: Empty content from ${path}`); }
+                            }).catch(error => this.logStatus(`Error reading ${filePath}: ${error}`, true))
                         );
-                    } else if (!file.type && file.size === 0 && filePath) {
-                        // Skip likely directory entries (no type, size 0)
-                    } else if (filePath && !(file.name.endsWith('.rst') || file.name.endsWith('.txt'))) {
-                        // Skip other file types explicitly
-                        // this.logStatus(`Skipping non .rst/.txt file: ${filePath}`); // Optional: Log skipped files
-                    } else if (!filePath) {
-                        this.logStatus(`Skipping item with no path: ${file.name}`);
-                    }
-
-                    // Provide feedback during processing large folders (yield to UI thread)
+                    } // Add else if/else for skipping dirs/other files if needed
                     if (promises.length > 0 && promises.length % 100 === 0) {
-                         if (this.elements.readingStatusDiv) {
-                            this.elements.readingStatusDiv.textContent = `Reading Files... (${processedFileCount} relevant files processed, ${storedParagraphCount} paragraphs stored)`;
-                         }
-                         this.logStatus(`Reading progress: ${processedFileCount} files processed...`);
-                         await new Promise(resolve => setTimeout(resolve, 0)); // Allow UI updates
+                         if (this.elements.readingStatusDiv) this.elements.readingStatusDiv.textContent = `Reading... (${processedFileCount} files, ${storedParagraphCount} paras)`;
+                         this.logStatus(`Reading progress: ${processedFileCount} files...`);
+                         await new Promise(resolve => setTimeout(resolve, 0));
                     }
                 }
-
-                // Wait for all file reading promises to complete
                 await Promise.all(promises);
-
                 const duration = ((performance.now() - startTime) / 1000).toFixed(2);
-                 if (this.elements.readingStatusDiv) {
-                    this.elements.readingStatusDiv.textContent = `Reading complete! Found ${processedFileCount} relevant files, stored ${storedParagraphCount} paragraphs in ${duration}s. Ready to query.`;
-                 }
-                this.logStatus(`File reading finished. Files: ${processedFileCount}, Paragraphs: ${storedParagraphCount}, Time: ${duration}s.`);
-                this.state.isReadingFiles = false;
-                this.updateSubmitButtonState();
-            },
+                 if (this.elements.readingStatusDiv) this.elements.readingStatusDiv.textContent = `Read ${processedFileCount} files, ${storedParagraphCount} paras in ${duration}s. Ready.`;
+                this.logStatus(`Read ${processedFileCount} files, ${storedParagraphCount} paras in ${duration}s.`);
+                this.state.isReadingFiles = false; this.updateSubmitButtonState();
+             },
 
-            /**
-             * Reads the content of a single file as text.
-             * Attempts UTF-8 first, then Latin-1 as a fallback.
-             * @param {File} file - The file object to read.
-             * @returns {Promise<{path: string, content: string|null}>} A promise resolving with the file path and content.
-             */
-            readFileContent(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    const filePath = file.webkitRelativePath || file.name;
-
-                    reader.onload = (event) => resolve({ path: filePath, content: event.target.result });
-                    reader.onerror = (event) => {
-                        reader.abort(); // Ensure reader is stopped
-                        reject(new Error(`FileReader error for ${filePath}: ${event.target.error}`));
-                    };
-
-                    try {
-                        // Try reading as UTF-8 first
-                        reader.readAsText(file, 'utf-8');
-                    } catch (e) {
+            readFileContent(file) { /* ... (same as before) ... */
+                 return new Promise((resolve, reject) => {
+                    const reader = new FileReader(); const filePath = file.webkitRelativePath || file.name;
+                    reader.onload = (e) => resolve({ path: filePath, content: e.target.result });
+                    reader.onerror = (e) => { reader.abort(); reject(new Error(`FileReader error for ${filePath}: ${e.target.error}`)); };
+                    try { reader.readAsText(file, 'utf-8'); }
+                    catch (e) {
                         this.logStatus(`UTF-8 read failed for ${filePath}, trying Latin-1...`, true);
-                        try {
-                            // Fallback to Latin-1 if UTF-8 fails
-                            reader.readAsText(file, 'latin-1');
-                        } catch (e2) {
-                            reject(new Error(`Could not read file ${filePath} with UTF-8 or Latin-1: ${e2}`));
-                        }
+                        try { reader.readAsText(file, 'latin-1'); }
+                        catch (e2) { reject(new Error(`Could not read ${filePath}: ${e2}`)); }
                     }
                 });
             },
 
-            // --- Manual Searching and Context Assembly ---
+            // --- Manual Searching and Context Assembly --- (searchDocsManual, assembleContext remain the same)
 
-            /**
-             * Performs a keyword-based search over the stored document paragraphs.
-             * Scores paragraphs based on keyword matches and proximity.
-             * @param {string[]} keywords - An array of keywords to search for.
-             * @param {number} maxSnippets - The maximum number of snippets to return.
-             * @returns {Promise<Array<{score: number, path: string, snippet: string, docId: number}>>} A promise resolving with an array of scored snippets.
-             */
-            async searchDocsManual(keywords, maxSnippets) {
-                // Ensure progress bar elements exist
-                if (!this.elements.searchProgressContainer || !this.elements.searchProgressBar) {
-                    this.logStatus("Search progress elements not found.", true);
-                    return [];
-                }
-                this.elements.searchProgressContainer.style.display = 'block';
-                this.updateSearchProgress(0, 1); // Show 0% initially
-
-                const docIds = Object.keys(this.state.documentStore);
-                const totalDocs = docIds.length;
-
-                if (totalDocs === 0) {
-                    this.logStatus("Document store is empty. Cannot search.", true);
-                    this.elements.searchProgressContainer.style.display = 'none';
-                    return [];
-                }
-                // Allow search even with no keywords - might return all docs or based on other criteria later
-                if (!keywords || keywords.length === 0) {
-                    this.logStatus("No keywords extracted for search. Searching all paragraphs (might be less efficient).");
-                    // Set keywordSet to empty, scoring logic will handle it (score will be 0 unless modified)
-                    keywords = [];
-                }
-
-                this.logStatus(`Starting manual search for keywords: [${keywords.join(', ')}] across ${totalDocs} paragraphs.`);
-                const startTime = performance.now();
-                const scoredSnippets = [];
-                const keywordSet = new Set(keywords.map(kw => kw.toLowerCase())); // Ensure keywords are lowercase
-                let processedCount = 0;
-
+            async searchDocsManual(keywords, maxSnippets) { /* ... (same as before) ... */
+                if (!this.elements.searchProgressContainer || !this.elements.searchProgressBar) return [];
+                this.elements.searchProgressContainer.style.display = 'block'; this.updateSearchProgress(0, 1);
+                const docIds = Object.keys(this.state.documentStore); const totalDocs = docIds.length;
+                if (totalDocs === 0) { this.logStatus("Doc store empty.", true); this.elements.searchProgressContainer.style.display = 'none'; return []; }
+                if (!keywords || keywords.length === 0) { this.logStatus("No keywords for search."); keywords = []; }
+                this.logStatus(`Searching [${keywords.join(', ')}] in ${totalDocs} paras.`);
+                const startTime = performance.now(); const scoredSnippets = [];
+                const keywordSet = new Set(keywords.map(kw => kw.toLowerCase())); let processedCount = 0;
                 for (const docIdStr of docIds) {
-                    const docId = parseInt(docIdStr, 10);
-                    const docInfo = this.state.documentStore[docId];
-                    if (!docInfo || !docInfo.text) continue; // Skip if data is missing
-
-                    const paraText = docInfo.text;
-                    const paraLower = paraText.toLowerCase();
-                    const path = docInfo.path;
-                    let score = 0;
-                    const foundKeywords = new Set();
-                    const keywordIndices = [];
-
-                    // Find occurrences of each keyword only if keywords exist
+                    const docId = parseInt(docIdStr, 10); const docInfo = this.state.documentStore[docId];
+                    if (!docInfo || !docInfo.text) continue;
+                    const paraText = docInfo.text; const paraLower = paraText.toLowerCase(); const path = docInfo.path;
+                    let score = 0; const foundKeywords = new Set(); const keywordIndices = [];
                     if (keywordSet.size > 0) {
                         for (const kw of keywordSet) {
                             let index = paraLower.indexOf(kw);
-                            if (index !== -1) {
-                                foundKeywords.add(kw);
-                                keywordIndices.push(index);
-                            }
-                        }
-                        score = foundKeywords.size; // Base score on unique keywords found
-                    } else {
-                        score = 0; // Default score if no keywords to search for
-                        // Optionally, could add a base score or length-based score here if desired
+                            if (index !== -1) { foundKeywords.add(kw); keywordIndices.push(index); }
+                        } score = foundKeywords.size;
                     }
-
-
-                    // Only proceed with snippet generation etc. if score > 0 (or if desired for keyword-less search)
-                    // For now, only include snippets that match keywords.
                     if (score > 0) {
-                        // Bonus for multiple keywords found close together
                         if (score > 1 && keywordIndices.length > 1) {
-                            keywordIndices.sort((a, b) => a - b);
-                            const span = keywordIndices[keywordIndices.length - 1] - keywordIndices[0];
-                            if (span < this.config.MAX_SNIPPET_LEN) {
-                                score += 1; // Simple proximity bonus
-                            }
+                            keywordIndices.sort((a, b) => a - b); const span = keywordIndices[keywordIndices.length - 1] - keywordIndices[0];
+                            if (span < this.config.MAX_SNIPPET_LEN) score += 1;
                         }
-
-                        // Generate a snippet around the first found keyword
-                        let snippet = paraText; // Default to full paragraph
+                        let snippet = paraText;
                         try {
                             let firstKwIndex = Math.min(...keywordIndices);
                             if (firstKwIndex !== Infinity && firstKwIndex >= 0) {
                                 const snippetHalfLen = Math.floor(this.config.MAX_SNIPPET_LEN / 2);
-                                let start = Math.max(0, firstKwIndex - snippetHalfLen);
-                                let end = Math.min(paraText.length, firstKwIndex + snippetHalfLen);
-                                snippet = paraText.substring(start, end);
-                                const prefix = start > 0 ? "..." : "";
-                                const suffix = end < paraText.length ? "..." : "";
+                                let start = Math.max(0, firstKwIndex - snippetHalfLen); let end = Math.min(paraText.length, firstKwIndex + snippetHalfLen);
+                                snippet = paraText.substring(start, end); const prefix = start > 0 ? "..." : ""; const suffix = end < paraText.length ? "..." : "";
                                 snippet = prefix + snippet + suffix;
-                                if (snippet.length > this.config.MAX_SNIPPET_LEN + 6) {
-                                     snippet = snippet.substring(0, this.config.MAX_SNIPPET_LEN + 3) + "...";
-                                }
-                            } else {
-                                 snippet = paraText.substring(0, this.config.MAX_SNIPPET_LEN) + (paraText.length > this.config.MAX_SNIPPET_LEN ? "..." : "");
-                            }
-                        } catch (e) {
-                            this.logStatus(`Error extracting snippet for doc ID ${docId}: ${e}`, true);
-                            snippet = paraText.substring(0, this.config.MAX_SNIPPET_LEN) + (paraText.length > this.config.MAX_SNIPPET_LEN ? "..." : "");
-                        }
+                                if (snippet.length > this.config.MAX_SNIPPET_LEN + 6) snippet = snippet.substring(0, this.config.MAX_SNIPPET_LEN + 3) + "...";
+                            } else { snippet = paraText.substring(0, this.config.MAX_SNIPPET_LEN) + (paraText.length > this.config.MAX_SNIPPET_LEN ? "..." : ""); }
+                        } catch (e) { this.logStatus(`Snippet error ${docId}: ${e}`, true); snippet = paraText.substring(0, this.config.MAX_SNIPPET_LEN) + (paraText.length > this.config.MAX_SNIPPET_LEN ? "..." : ""); }
                         scoredSnippets.push({ score: score, path: path, snippet: snippet, docId: docId });
                     }
-                    // If keyword-less search should include all paragraphs, push here with score 0
-
                     processedCount++;
-                    // Update progress bar periodically or at the end
                     if (processedCount % this.config.SEARCH_UPDATE_INTERVAL === 0 || processedCount === totalDocs) {
-                        this.updateSearchProgress(processedCount, totalDocs);
-                        await new Promise(resolve => setTimeout(resolve, 0));
+                        this.updateSearchProgress(processedCount, totalDocs); await new Promise(resolve => setTimeout(resolve, 0));
                     }
                 }
-
                 const duration = ((performance.now() - startTime) / 1000).toFixed(2);
-                this.logStatus(`Manual search completed in ${duration}s. Found ${scoredSnippets.length} potential snippets matching keywords.`);
-
-                // Sort snippets by score (descending), then path (ascending)
-                scoredSnippets.sort((a, b) => {
-                    if (b.score !== a.score) return b.score - a.score;
-                    return a.path.localeCompare(b.path);
-                });
-
+                this.logStatus(`Search done in ${duration}s. Found ${scoredSnippets.length} matches.`);
+                scoredSnippets.sort((a, b) => { if (b.score !== a.score) return b.score - a.score; return a.path.localeCompare(b.path); });
                 const finalSnippets = scoredSnippets.slice(0, maxSnippets);
-                this.logStatus(`Returning ${finalSnippets.length} top snippets after scoring and limiting.`);
-
-                this.elements.searchProgressContainer.style.display = 'none'; // Hide progress bar
-                return finalSnippets;
+                this.logStatus(`Returning ${finalSnippets.length} top snippets.`);
+                this.elements.searchProgressContainer.style.display = 'none'; return finalSnippets;
             },
 
-            /**
-             * Assembles the final context string from scored snippets.
-             * Avoids duplicate paragraphs and respects character/snippet limits.
-             * @param {Array<{score: number, path: string, snippet: string, docId: number}>} scoredSnippets - Sorted snippets from search.
-             * @param {number} maxSnippets - Max number of snippets to include.
-             * @param {number} maxChars - Max total characters for the context.
-             * @returns {string} The assembled context string.
-             */
-            assembleContext(scoredSnippets, maxSnippets, maxChars) {
-                let finalContext = "";
-                let totalChars = 0;
-                let snippetCount = 0;
-                const addedDocIds = new Set(); // Track included paragraph IDs to avoid duplicates
-                const includedFiles = new Set(); // Track files already marked with "--- Context from: ..."
-
-                this.logStatus(`Assembling context from ${scoredSnippets.length} candidates (max ${maxSnippets} snippets, ${maxChars} chars)`);
-
+            assembleContext(scoredSnippets, maxSnippets, maxChars) { /* ... (same as before) ... */
+                let finalContext = ""; let totalChars = 0; let snippetCount = 0;
+                const addedDocIds = new Set(); const includedFiles = new Set();
+                this.logStatus(`Assembling context from ${scoredSnippets.length} candidates (max ${maxSnippets}, ${maxChars} chars)`);
                 for (const { path, snippet, docId } of scoredSnippets) {
-                    if (snippetCount >= maxSnippets) {
-                        this.logStatus(`Reached max snippet count (${maxSnippets}).`);
-                        break;
-                    }
-                    if (addedDocIds.has(docId)) {
-                        continue;
-                    }
-
+                    if (snippetCount >= maxSnippets) { this.logStatus(`Max snippets reached.`); break; }
+                    if (addedDocIds.has(docId)) continue;
                     const displayPath = String(path).replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                    const fileMarker = `--- Context from: ${displayPath} ---\n`;
-                    const snippetText = snippet + "\n";
-                    let contextToAdd = "";
-                    let estimatedLen = 0;
-
-                    if (!includedFiles.has(path)) {
-                        contextToAdd += fileMarker;
-                        estimatedLen += fileMarker.length;
-                        // Don't add to includedFiles until we successfully add the snippet
-                    }
-
-                    contextToAdd += snippetText;
-                    estimatedLen += snippetText.length;
-
+                    const fileMarker = `--- Context from: ${displayPath} ---\n`; const snippetText = snippet + "\n";
+                    let contextToAdd = ""; let estimatedLen = 0;
+                    if (!includedFiles.has(path)) { contextToAdd += fileMarker; estimatedLen += fileMarker.length; }
+                    contextToAdd += snippetText; estimatedLen += snippetText.length;
                     if (totalChars + estimatedLen <= maxChars) {
-                        finalContext += contextToAdd;
-                        totalChars += contextToAdd.length;
-                        snippetCount++;
-                        addedDocIds.add(docId);
-                        if (!includedFiles.has(path)) { // Mark file included only if snippet was added
-                           includedFiles.add(path);
-                        }
-                    } else {
-                        this.logStatus(`Reached context character limit (${totalChars} + ${estimatedLen} > ${maxChars}), stopping snippet inclusion.`);
-                        break;
-                    }
+                        finalContext += contextToAdd; totalChars += contextToAdd.length; snippetCount++; addedDocIds.add(docId);
+                        if (!includedFiles.has(path)) includedFiles.add(path);
+                    } else { this.logStatus(`Context char limit reached.`); break; }
                 }
-                this.logStatus(`Assembled context: ${snippetCount} unique snippets from ${includedFiles.size} files, ${totalChars} chars.`);
+                this.logStatus(`Assembled context: ${snippetCount} snippets, ${includedFiles.size} files, ${totalChars} chars.`);
                 return finalContext.trim();
             },
 
 
-            // --- LLM Interaction ---
+            // --- LLM Interaction (Using OpenAI Library) ---
 
             /**
-             * Makes a fetch request to the configured LLM API.
-             * Handles headers, body, timeout, and basic error checking.
-             * @param {object[]} messages - The array of message objects for the LLM.
-             * @param {number} maxTokens - The maximum number of tokens for the response.
-             * @param {boolean} [isStreaming=false] - Whether to request a streaming response.
-             * @returns {Promise<Response>} A promise resolving with the fetch Response object.
-             * @throws {Error} If the request fails or times out.
+             * Calls the OpenAI API using the initialized client.
+             * Handles both streaming and non-streaming requests.
+             * @param {object[]} messages - Array of message objects.
+             * @param {number} maxTokens - Max tokens for the response.
+             * @param {boolean} stream - Whether to stream the response.
+             * @returns {Promise<object|AsyncIterable<OpenAI.Chat.Completions.ChatCompletionChunk>>}
+             * Returns the completion object for non-streaming, or the stream iterator for streaming.
+             * @throws {Error} If the client is not initialized or API call fails.
              */
-            async callLLM(messages, maxTokens, isStreaming = false) {
-                const url = this.elements.llmUrlInput.value;
-                const apiKey = this.elements.llmApiKeyInput.value;
+            async callLLM(messages, maxTokens, stream = false) {
+                if (!this.state.openaiClient) {
+                    throw new Error("OpenAI client is not initialized. Please check API Key.");
+                }
                 const model = this.elements.llmModelInput.value;
-
-                if (!url || !model) {
-                    throw new Error("LLM Base URL and Model Name must be provided in configuration.");
+                if (!model) {
+                    throw new Error("LLM Model Name must be provided.");
                 }
 
-                const headers = { 'Content-Type': 'application/json' };
-                if (apiKey && apiKey !== 'DUMMY_KEY') {
-                    headers['Authorization'] = `Bearer ${apiKey}`;
-                }
-
-                const body = JSON.stringify({
-                    model: model,
-                    messages: messages,
-                    max_tokens: maxTokens,
-                    stream: isStreaming,
-                    temperature: isStreaming ? 0.5 : 0.1
-                });
-
-                const controller = new AbortController();
-                const timeoutValue = this.config.REQUEST_TIMEOUT_MS || 180000; // Default to 180s if not set
-                const timeoutId = setTimeout(() => {
-                    this.logStatus(`LLM request timed out after ${timeoutValue / 1000}s. Aborting.`, true);
-                    controller.abort();
-                }, timeoutValue);
-
-                this.logStatus(`Attempting LLM call to ${url} (Model: ${model}, Streaming: ${isStreaming}, Timeout: ${timeoutValue/1000}s)`);
+                this.logStatus(`Calling OpenAI API (Model: ${model}, Stream: ${stream})`);
 
                 try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: headers,
-                        body: body,
-                        signal: controller.signal
+                    const response = await this.state.openaiClient.chat.completions.create({
+                        model: model,
+                        messages: messages,
+                        max_tokens: maxTokens,
+                        stream: stream,
+                        temperature: stream ? 0.5 : 0.1 // Keep temperature adjustment
                     });
-
-                    clearTimeout(timeoutId);
-
-                    if (!response.ok) {
-                        let errorBody = 'Could not read error body';
-                        try {
-                            errorBody = await response.clone().text();
-                        } catch (e) {
-                            this.logStatus(`Failed to read error body: ${e}`, true);
-                        }
-                        throw new Error(`LLM API request failed: ${response.status} ${response.statusText}. Body: ${errorBody}`);
-                    }
-                    this.logStatus(`LLM API request successful (Status: ${response.status})`);
+                    // For non-streaming, response is the completion object
+                    // For streaming, response is an async iterable stream
                     return response;
-
                 } catch (error) {
-                    clearTimeout(timeoutId);
-                    if (error.name === 'AbortError') {
-                        throw new Error(`LLM request timed out after ${timeoutValue / 1000}s.`);
+                    this.logStatus(`OpenAI API call failed: ${error}`, true);
+                    // Try to parse OpenAI specific error details if available
+                    if (error instanceof OpenAI.APIError) {
+                         console.error("OpenAI API Error Details:", {
+                             status: error.status,
+                             headers: error.headers,
+                             error: error.error, // Contains code, message, param, type
+                         });
+                         throw new Error(`OpenAI API Error (${error.status}): ${error.error?.message || error.message}`);
                     }
-                    this.logStatus(`Error during LLM fetch: ${error}`, true);
-                    throw error;
+                    throw error; // Re-throw original error if not an APIError
                 }
             },
 
             /**
-             * Asks the LLM if the current context is sufficient or needs refinement.
-             * @param {string} userQuery - The original user query.
-             * @param {string} context - The currently assembled context.
-             * @returns {Promise<string|null>} A promise resolving with refinement keywords string, or null if context is sufficient/error occurs.
+             * Asks the LLM for guidance (non-streaming).
              */
             async askLlmForGuidance(userQuery, context) {
-                const system_prompt =
+                const system_prompt = /* ... (same system prompt as before) ... */
                     "You are a search assistant. Analyze the user's QUESTION and the provided CONTEXT snippets. " +
                     "Determine if the context is likely sufficient or if a more focused search is needed. " +
                     "Respond ONLY with 'CONTEXT_SUFFICIENT' or 'SEARCH_FOR: keyword1 keyword2 ...'. " +
                     "Provide 1-5 specific, relevant keywords if search refinement is needed. " +
                     "Do not add explanation, apologies, or any other text outside the required format.";
-
                 const messages = [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": `CONTEXT:\n${context || '[No context found]'}\n\nQUESTION:\n${userQuery}`}
@@ -735,17 +499,16 @@
                 }
 
                 try {
-                    const response = await this.callLLM(messages, this.config.GUIDANCE_MAX_TOKENS, false);
-                    const data = await response.json();
+                    // Call non-streaming
+                    const completion = await this.callLLM(messages, this.config.GUIDANCE_MAX_TOKENS, false);
 
+                    // Extract content from the non-streaming response
                     let rawContent = '';
-                    if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
-                        rawContent = data.choices[0].message.content;
-                    } else if (typeof data.content === 'string') {
-                         rawContent = data.content;
+                    if (completion.choices && completion.choices[0] && completion.choices[0].message && completion.choices[0].message.content) {
+                        rawContent = completion.choices[0].message.content;
                     } else {
-                        this.logStatus("LLM guidance response format unexpected.", true);
-                        console.error("Unexpected guidance response structure:", data);
+                        this.logStatus("LLM guidance response format unexpected (OpenAI Lib).", true);
+                        console.error("Unexpected guidance response structure:", completion);
                         return null;
                     }
 
@@ -753,6 +516,7 @@
                     const content = this.stripThinkTags(rawContent);
                     this.logStatus(`LLM Guidance after stripping <think> tags: '${content}'`);
 
+                    // Parse the cleaned content (same logic as before)
                     if (content.startsWith("SEARCH_FOR:")) {
                         let keywordsStr = content.substring("SEARCH_FOR:".length).trim();
                         keywordsStr = keywordsStr.replace(/[.,;`]+$/, '').trim();
@@ -760,23 +524,20 @@
                             this.logStatus(`LLM suggests refining search with: '${keywordsStr}'`);
                             return keywordsStr;
                         } else {
-                            this.logStatus("LLM guidance 'SEARCH_FOR:' but no keywords followed. Assuming sufficient.", true);
+                            this.logStatus("LLM guidance 'SEARCH_FOR:' but no keywords. Assuming sufficient.", true);
                             return null;
                         }
                     } else if (content.includes("CONTEXT_SUFFICIENT")) {
                         this.logStatus("LLM indicates context is sufficient.");
                         return null;
                     } else {
-                        if (!content) {
-                             this.logStatus("LLM guidance contained only <think> tags or was empty after stripping, assuming context sufficient.", true);
-                        } else {
-                            this.logStatus(`LLM guidance format unexpected or unclear (after stripping): '${content}'. Assuming sufficient.`, true);
-                        }
+                        if (!content) this.logStatus("LLM guidance empty after stripping. Assuming sufficient.", true);
+                        else this.logStatus(`LLM guidance format unclear: '${content}'. Assuming sufficient.`, true);
                         return null;
                     }
                 } catch (error) {
-                    // Error already logged in callLLM, just update UI and return null
-                    this.logStatus(`Error getting LLM guidance: ${error.message}`, true); // Log specific message
+                    // Error logged in callLLM
+                    this.logStatus(`Error getting LLM guidance: ${error.message}`, true);
                     if (this.elements.llmAnswerDiv) {
                         this.elements.llmAnswerDiv.textContent = `Error getting LLM guidance: ${error.message || error}. Proceeding with initial context.`;
                     }
@@ -785,182 +546,115 @@
             },
 
             /**
-             * Asks the LLM for the final answer based on the query and context, streaming the response.
-             * @param {string} userQuery - The original user query.
-             * @param {string} context - The final assembled context.
-             * @returns {Promise<boolean>} A promise resolving with true if streaming completed (even if empty), false on error.
+             * Asks the LLM for the final answer (streaming).
              */
             async askLlmForFinalAnswer(userQuery, context) {
-                const system_prompt =
+                const system_prompt = /* ... (same system prompt as before) ... */
                     "You are a specialist assistant knowledgeable about a specific software package. " +
                     "Answer the user's question based *only* on the provided CONTEXT from the documentation. " +
                     "If the context doesn't contain the answer or is empty/irrelevant, state clearly that the information is not available in the provided snippets. " +
                     "Be concise and direct. Do not include apologies or introductory phrases like 'Based on the context...' unless essential for clarity. " +
                     "Format code examples appropriately using markdown (e.g., ```python ... ```)." +
                     "If providing an answer, make it helpful and complete based *solely* on the given context.";
-
                 const messages = [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": `CONTEXT:\n${context || '[No relevant context found]'}\n\nQUESTION:\n${userQuery}`}
                 ];
 
-                if (!context) {
-                    this.logStatus("Warning: No relevant context found for final query.", true);
-                }
+                if (!context) this.logStatus("Warning: No relevant context found for final query.", true);
 
                 this.logStatus("Sending Final Query to LLM (Streaming)...");
-                if (!this.elements.llmAnswerDiv) {
-                     this.logStatus("LLM Answer element not found.", true);
-                     return false;
-                }
+                if (!this.elements.llmAnswerDiv) { this.logStatus("LLM Answer element not found.", true); return false; }
+
                 this.elements.llmAnswerDiv.innerHTML = '<p class="text-sm italic text-gray-600 mb-2">--- LLM Answer Stream ---</p>';
                 const contentArea = document.createElement('div');
-                // Apply whitespace style to the content area to respect spaces and newlines
-                contentArea.style.whiteSpace = 'pre-wrap';
+                contentArea.style.whiteSpace = 'pre-wrap'; // Preserve whitespace
                 this.elements.llmAnswerDiv.appendChild(contentArea);
 
-                this.state.currentReader = null;
-
+                let stream;
                 try {
-                    const response = await this.callLLM(messages, this.config.FINAL_ANSWER_MAX_TOKENS, true);
+                    // Get the stream object (async iterator)
+                    stream = await this.callLLM(messages, this.config.FINAL_ANSWER_MAX_TOKENS, true);
 
-                    if (!response.body) {
-                        throw new Error("Response body is not readable (stream not available).");
-                    }
-
-                    this.state.currentReader = response.body.getReader();
-                    const decoder = new TextDecoder();
-                    let buffer = '';
                     let fullResponse = '';
                     let firstChunkProcessed = false;
 
-                    while (true) {
-                        const { done, value } = await this.state.currentReader.read();
-                        if (done) {
-                            this.logStatus("LLM stream finished.");
-                            break;
-                        }
+                    // Iterate over the stream using for-await...of
+                    for await (const chunk of stream) {
+                        // Extract content from the stream chunk
+                        const contentPiece = chunk.choices?.[0]?.delta?.content;
 
-                        buffer += decoder.decode(value, { stream: true });
-                        let lines = buffer.split('\n');
-                        buffer = lines.pop();
-
-                        for (const line of lines) {
-                            if (line.startsWith('data: ')) {
-                                const jsonData = line.substring(6).trim();
-                                if (jsonData === '[DONE]') {
-                                    this.logStatus("LLM stream sent [DONE] signal.");
-                                    continue;
+                        if (contentPiece) {
+                            const cleanedContentPiece = this.stripThinkTags(contentPiece);
+                            if (cleanedContentPiece) {
+                                if (!firstChunkProcessed) {
+                                    this.logStatus("LLM stream started receiving data...");
+                                    firstChunkProcessed = true;
                                 }
-                                try {
-                                    const chunk = JSON.parse(jsonData);
-                                    let contentPiece = chunk.choices?.[0]?.delta?.content;
-
-                                    if (contentPiece) {
-                                        const cleanedContentPiece = this.stripThinkTags(contentPiece);
-                                        if (cleanedContentPiece) {
-                                            if (!firstChunkProcessed) {
-                                                this.logStatus("LLM stream started receiving data...");
-                                                firstChunkProcessed = true;
-                                            }
-                                            // *** FIX: Append to textContent instead of creating new nodes ***
-                                            contentArea.textContent += cleanedContentPiece;
-                                            fullResponse += cleanedContentPiece;
-                                            this.elements.llmAnswerDiv.scrollTop = this.elements.llmAnswerDiv.scrollHeight;
-                                        }
-                                    }
-                                    const finishReason = chunk.choices?.[0]?.finish_reason;
-                                    if (finishReason) {
-                                        this.logStatus(`LLM stream indicated finish reason: ${finishReason}`);
-                                    }
-                                } catch (e) {
-                                    this.logStatus(`Error parsing LLM stream JSON chunk: ${e}. Chunk: ${jsonData}`, true);
-                                }
+                                // Append cleaned content using textContent
+                                contentArea.textContent += cleanedContentPiece;
+                                fullResponse += cleanedContentPiece;
+                                this.elements.llmAnswerDiv.scrollTop = this.elements.llmAnswerDiv.scrollHeight; // Auto-scroll
                             }
                         }
-                    }
+                         // Check for finish reason in the chunk (might appear in the last chunk)
+                        const finishReason = chunk.choices?.[0]?.finish_reason;
+                        if (finishReason) {
+                            this.logStatus(`LLM stream indicated finish reason: ${finishReason}`);
+                        }
+                    } // End of stream iteration
 
-                    if (buffer.trim()) {
-                         this.logStatus(`Warning: Non-empty buffer remaining after stream end: ${buffer}`, true);
-                    }
+                    this.logStatus("LLM stream finished.");
                     if (!firstChunkProcessed) {
                         this.logStatus("LLM stream provided no content.", true);
                         contentArea.appendChild(document.createTextNode("[No content received from LLM stream]"));
                     }
-                    return true;
+                    return true; // Stream completed successfully
 
                 } catch (error) {
-                    // Error already logged in callLLM
-                    this.logStatus(`Error getting LLM final answer: ${error.message}`, true);
-                    const errorMsg = `<p class="text-red-600 font-semibold mt-2">Error during LLM request: ${error.message || error}</p>`;
+                    // Error logged in callLLM
+                    this.logStatus(`Error processing LLM stream: ${error.message}`, true);
+                    const errorMsg = `<p class="text-red-600 font-semibold mt-2">Error during LLM stream: ${error.message || error}</p>`;
                      if (this.elements.llmAnswerDiv.innerHTML.includes('--- LLM Answer Stream ---')) {
                          this.elements.llmAnswerDiv.innerHTML += errorMsg;
                      } else {
                          this.elements.llmAnswerDiv.innerHTML = errorMsg;
                      }
-                    return false;
-                } finally {
-                    if (this.state.currentReader) {
-                        try {
-                            await this.state.currentReader.cancel();
-                            this.logStatus("Stream reader cancelled.");
-                        } catch (cancelError) {
-                            this.logStatus(`Error cancelling stream reader (ignored): ${cancelError}`, true);
-                        }
-                        this.state.currentReader = null;
-                    }
+                    return false; // Indicate error during streaming
                 }
+                // Note: No explicit stream cancellation needed here, for-await handles iterator completion/breakage.
             },
 
 
-            // --- Main Query Logic ---
+            // --- Main Query Logic --- (handleSubmitQuery remains largely the same, just calls the new LLM functions)
 
-            /**
-             * Handles the submission of the user query.
-             * Orchestrates the search, context assembly, LLM guidance, and final answer steps.
-             */
             async handleSubmitQuery() {
-                // Ensure elements are available
-                if (!this.elements.userQueryInput || !this.elements.llmAnswerDiv) {
-                    console.error("Required UI elements not found.");
-                    alert("Initialization error. Please refresh the page.");
+                if (!this.elements.userQueryInput || !this.elements.llmAnswerDiv) { console.error("UI elements missing."); alert("Init error."); return; }
+                // *** Add check for initialized OpenAI client ***
+                if (!this.state.openaiClient) {
+                    this.logStatus("OpenAI Client not ready. Please check API Key and Base URL.", true);
+                    alert("OpenAI Client not ready. Please configure the API Key.");
+                    this.updateSubmitButtonState(); // Ensure button reflects client state
                     return;
                 }
 
                 const userQuery = this.elements.userQueryInput.value.trim();
-                if (!userQuery) {
-                    this.logStatus("Query cannot be empty.", true);
-                    alert("Please enter a query.");
-                    return;
-                }
-
+                if (!userQuery) { this.logStatus("Query empty.", true); alert("Please enter query."); return; }
                 const docsLoaded = Object.keys(this.state.documentStore).length > 0;
-                if (!docsLoaded) {
-                    this.logStatus("Documentation not loaded yet.", true);
-                    alert("Please load the documentation folder first.");
-                    return;
-                }
+                if (!docsLoaded) { this.logStatus("Docs not loaded.", true); alert("Load docs first."); return; }
+                if (this.state.isQuerying || this.state.isReadingFiles || this.state.isSearching) { this.logStatus("Busy.", true); alert("Wait for current operation."); return; }
 
-                if (this.state.isQuerying || this.state.isReadingFiles || this.state.isSearching) {
-                    this.logStatus("Please wait for the current operation to complete.", true);
-                    alert("Please wait for the current operation (reading, searching, or querying) to complete.");
-                    return;
-                }
-
-                this.state.isQuerying = true;
-                this.state.isSearching = true;
+                this.state.isQuerying = true; this.state.isSearching = true;
                 this.updateSubmitButtonState();
                 this.elements.llmAnswerDiv.textContent = 'Processing query...';
-                this.logStatus(`--- New Query Start ---`);
-                this.logStatus(`User Query: "${userQuery}"`);
+                this.logStatus(`--- New Query Start ---`); this.logStatus(`User Query: "${userQuery}"`);
 
                 try {
                     // Step 1: Initial Search
                     const initialKeywords = this.extractKeywords(userQuery);
-                    this.logStatus(`Initial keywords for search: ${initialKeywords.join(', ') || '(None extracted)'}`);
+                    this.logStatus(`Initial keywords: ${initialKeywords.join(', ') || '(None)'}`);
                     let initialSnippets = await this.searchDocsManual(initialKeywords, this.config.MAX_SNIPPETS_INITIAL);
-                    this.state.isSearching = false;
-                    this.updateSubmitButtonState();
+                    this.state.isSearching = false; this.updateSubmitButtonState();
                     let context = this.assembleContext(initialSnippets, this.config.MAX_SNIPPETS_INITIAL, this.config.MAX_CONTEXT_CHARS);
 
                     // Step 2: Ask LLM for Guidance
@@ -970,33 +664,26 @@
                     if (refinedKeywordsStr) {
                         const refinedKeywordsList = this.extractKeywords(refinedKeywordsStr);
                         if (refinedKeywordsList.length > 0) {
-                            this.logStatus(`Refining search with LLM suggested keywords: ${refinedKeywordsList.join(', ')}`);
-                            this.state.isSearching = true;
-                            this.updateSubmitButtonState();
+                            this.logStatus(`Refining search: ${refinedKeywordsList.join(', ')}`);
+                            this.state.isSearching = true; this.updateSubmitButtonState();
                             const refinedSnippets = await this.searchDocsManual(refinedKeywordsList, this.config.MAX_SNIPPETS_REFINED);
-                            this.state.isSearching = false;
-                            this.updateSubmitButtonState();
+                            this.state.isSearching = false; this.updateSubmitButtonState();
                             context = this.assembleContext(refinedSnippets, this.config.MAX_SNIPPETS_REFINED, this.config.MAX_CONTEXT_CHARS);
-                        } else {
-                            this.logStatus("LLM suggested refinement but no valid keywords extracted. Using previous context.", true);
-                        }
-                    } else {
-                         this.logStatus("Proceeding with initial context (LLM indicated sufficient or guidance failed).");
-                    }
+                        } else { this.logStatus("LLM suggested refinement but no keywords. Using previous context.", true); }
+                    } else { this.logStatus("Proceeding with initial context."); }
 
                     // Step 4: Query LLM for Final Answer
                     await this.askLlmForFinalAnswer(userQuery, context);
 
-                } catch (error) {
-                    this.logStatus(`Error during query processing pipeline: ${error}`, true);
-                     if (this.elements.llmAnswerDiv) { // Check element exists before update
+                } catch (error) { // Catch errors from search/assembly/LLM calls
+                    this.logStatus(`Query processing pipeline error: ${error}`, true);
+                     if (this.elements.llmAnswerDiv) {
                         this.elements.llmAnswerDiv.textContent = `An unexpected error occurred: ${error.message || error}`;
                      }
-                    this.state.isSearching = false; // Ensure flag is reset on error
+                    this.state.isSearching = false; // Reset flag on error
                 } finally {
                     this.logStatus(`--- Query End ---`);
-                    this.state.isQuerying = false;
-                    this.state.isSearching = false;
+                    this.state.isQuerying = false; this.state.isSearching = false;
                     this.updateSubmitButtonState();
                 }
             }
@@ -1004,9 +691,8 @@
 
         // --- Global Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Defensive check in case script runs before elements are fully parsed (though DOMContentLoaded should handle it)
             if (document.readyState === 'loading') {
-                 console.log("DOM not fully loaded, waiting...");
+                 console.log("DOM not loaded, waiting...");
                  document.addEventListener('DOMContentLoaded', docQueryAgent.init.bind(docQueryAgent));
             } else {
                  console.log("DOM ready, initializing agent.");
