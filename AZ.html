@@ -2,460 +2,420 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Learn Alphabets & Phonics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --voice-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --clear-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --song-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --card-bg: #ffffff;
+            --text-main: #4a5568;
+        }
+
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
         
-        html, body {
+        body, html {
             height: 100%;
             margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent body scroll, handle scroll in card if needed */
             font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
         }
         
-        .container {
-            height: 100%;
+        .app-shell {
+            height: 100dvh; /* Dynamic viewport height for mobile browsers */
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 10px;
         }
         
         .card {
-            background: white;
+            background: var(--card-bg);
             width: 100%;
-            max-width: 600px;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 30px;
-            animation: slideIn 0.5s ease-out;
+            max-width: 500px;
+            height: 100%;
+            max-height: 850px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            overflow-y: auto; /* Allow internal scrolling if tiny screen */
         }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
+
+        /* Header section - compact for mobile */
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
         
         .header h1 {
             color: #667eea;
             margin: 0;
-            font-size: 28px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
+        /* Display Area */
         .display-area {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-            min-height: 120px;
+            background: var(--accent-gradient);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .txt {
-            font-size: 48px;
+        .display-text {
+            font-size: 32px;
             font-weight: bold;
             color: white;
             text-align: center;
             width: 100%;
             border: none;
             background: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            letter-spacing: 4px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        
-        .txt:focus {
-            outline: none;
-        }
-        
+
+        /* Alphabet Grid */
         .keyboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-            gap: 8px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(6, 1fr); /* 6 columns fits well on portrait mobile */
+            gap: 6px;
+            margin-bottom: 12px;
         }
         
         .keyboard button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            aspect-ratio: 1 / 1; /* Keep keys square */
+            background: var(--primary-gradient);
             color: white;
             border: none;
-            border-radius: 15px;
-            font-size: 24px;
+            border-radius: 10px;
+            font-size: 18px;
             font-weight: bold;
-            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        .keyboard button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 3px 0 #4a5568;
         }
         
         .keyboard button:active {
-            transform: scale(0.95);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #4a5568;
         }
         
         .keyboard button.pressed {
-            animation: bounce 0.3s ease;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: var(--accent-gradient);
+            transform: scale(0.9);
         }
-        
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .controls {
-            background: #f7f7f7;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
+
+        /* Controls Area - highly compacted */
+        .controls-panel {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e2e8f0;
         }
         
         .control-row {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
-            gap: 15px;
+            margin-bottom: 8px;
+            gap: 10px;
         }
         
         .control-row:last-child {
             margin-bottom: 0;
         }
         
-        .control-row label {
+        .control-label {
+            font-size: 13px;
             font-weight: bold;
-            color: #667eea;
-            min-width: 80px;
-            font-size: 16px;
+            color: #718096;
+            width: 55px;
         }
         
-        .control-row input[type="range"] {
+        .slider {
             flex: 1;
-            height: 8px;
-            border-radius: 5px;
-            background: #ddd;
+            height: 6px;
+            border-radius: 3px;
+            background: #cbd5e0;
             outline: none;
             -webkit-appearance: none;
         }
         
-        .control-row input[type="range"]::-webkit-slider-thumb {
+        .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #764ba2;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
-        
-        .control-row input[type="range"]::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            border: none;
-        }
-        
-        .voice-button {
+
+        .voice-toggle {
             flex: 1;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: var(--voice-gradient);
             color: white;
             border: none;
-            border-radius: 15px;
-            padding: 15px;
-            font-size: 18px;
+            border-radius: 10px;
+            padding: 8px;
+            font-size: 14px;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
-        .voice-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-        
-        .action-buttons {
+
+        /* Action Buttons */
+        .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
+            gap: 8px;
+            margin-top: auto; /* Push to bottom of card */
         }
         
-        .action-buttons button {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+        .btn-action {
             border: none;
-            border-radius: 15px;
-            padding: 18px;
-            font-size: 20px;
+            border-radius: 12px;
+            padding: 12px 5px;
+            color: white;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
         }
+
+        .btn-action i { font-size: 18px; }
+        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+
+        #clear { background: var(--clear-gradient); color: #742a2a; }
+        #reciteAll { background: var(--song-gradient); color: #1a4731; }
+        #speak { background: var(--primary-gradient); }
         
-        .action-buttons button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        #voices-hidden { display: none; }
+
+        /* Animation for bouncing */
+        @keyframes key-bounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
         }
-        
-        .action-buttons button:active {
-            transform: scale(0.98);
-        }
-        
-        #clear {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-        
-        #reciteAll {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
-        
-        select {
-            display: none;
-        }
-        
-        @media (max-width: 600px) {
-            .card {
-                padding: 20px;
-            }
-            
-            .txt {
-                font-size: 36px;
-            }
-            
-            .keyboard button {
-                font-size: 20px;
-                padding: 15px;
-            }
-            
-            .header h1 {
-                font-size: 24px;
-            }
+        .anim-bounce { animation: key-bounce 0.3s ease; }
+
+        /* Small Screen Adjustments */
+        @media (max-height: 600px) {
+            .header { margin-bottom: 5px; }
+            .header h1 { font-size: 16px; }
+            .display-area { min-height: 60px; padding: 10px; margin-bottom: 8px; }
+            .display-text { font-size: 24px; }
+            .keyboard { gap: 4px; }
+            .keyboard button { font-size: 16px; border-radius: 6px; }
+            .controls-panel { padding: 8px; }
+            .btn-action { padding: 8px 5px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="app-shell">
         <div class="card">
-            <div class="header">
-                <h1>🎨 Learn Alphabets & Phonics! 🎨</h1>
-            </div>
+            <header class="header">
+                <h1>✨ Alphabet Fun! ✨</h1>
+            </header>
             
             <div class="display-area">
-                <input type="text" class="txt" readonly placeholder="Click letters!">
+                <input type="text" class="display-text" id="display" readonly placeholder="TAP LETTERS!">
             </div>
             
             <div class="keyboard" id="keyboard">
-                <button>A</button>
-                <button>B</button>
-                <button>C</button>
-                <button>D</button>
-                <button>E</button>
-                <button>F</button>
-                <button>G</button>
-                <button>H</button>
-                <button>I</button>
-                <button>J</button>
-                <button>K</button>
-                <button>L</button>
-                <button>M</button>
-                <button>N</button>
-                <button>O</button>
-                <button>P</button>
-                <button>Q</button>
-                <button>R</button>
-                <button>S</button>
-                <button>T</button>
-                <button>U</button>
-                <button>V</button>
-                <button>W</button>
-                <button>X</button>
-                <button>Y</button>
-                <button>Z</button>
+                <!-- JS populated for efficiency -->
             </div>
             
-            <div class="controls">
+            <div class="controls-panel">
                 <div class="control-row">
-                    <label for="rate"><i class="fas fa-tachometer-alt"></i> Speed</label>
-                    <input type="range" min="0.3" max="2" value="0.8" step="0.1" id="rate">
+                    <span class="control-label"><i class="fas fa-bolt"></i> Speed</span>
+                    <input type="range" min="0.5" max="1.8" value="1.0" step="0.1" class="slider" id="rate">
                 </div>
                 <div class="control-row">
-                    <label for="pitch"><i class="fas fa-music"></i> Pitch</label>
-                    <input type="range" min="0.5" max="2" value="1.2" step="0.1" id="pitch">
+                    <span class="control-label"><i class="fas fa-music"></i> Pitch</span>
+                    <input type="range" min="0.5" max="2" value="1.2" step="0.1" class="slider" id="pitch">
                 </div>
                 <div class="control-row">
-                    <label><i class="fas fa-user"></i> Voice</label>
-                    <button class="voice-button" id="nextVoice">
-                        Change Voice <i class="fas fa-sync-alt"></i>
+                    <span class="control-label"><i class="fas fa-user"></i> Voice</span>
+                    <button class="voice-toggle" id="nextVoice">
+                        Switch Voice <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
             </div>
             
-            <div class="action-buttons">
-                <button id="clear">
-                    <i class="fas fa-trash"></i> Clear
+            <div class="action-grid">
+                <button class="btn-action" id="clear">
+                    <i class="fas fa-eraser"></i> Clear
                 </button>
-                <button id="reciteAll">
-                    <i class="fas fa-list-ol"></i> ABC Song
+                <button class="btn-action" id="reciteAll">
+                    <i class="fas fa-music"></i> ABCs
                 </button>
-                <button id="speak">
+                <button class="btn-action" id="speak">
                     <i class="fas fa-volume-up"></i> Speak
                 </button>
             </div>
             
-            <select id="voices"></select>
+            <select id="voices-hidden"></select>
         </div>
     </div>
     
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const synth = window.speechSynthesis;
-            const inputTxt = document.querySelector('.txt');
-            const voiceSelect = document.querySelector('#voices');
-            const pitch = document.querySelector('#pitch');
-            const rate = document.querySelector('#rate');
-            const nextVoiceButton = document.getElementById("nextVoice");
+            const display = document.getElementById('display');
+            const voiceSelect = document.getElementById('voices-hidden');
+            const pitch = document.getElementById('pitch');
+            const rate = document.getElementById('rate');
+            const nextVoiceBtn = document.getElementById("nextVoice");
             const keyboard = document.getElementById("keyboard");
             const clearBtn = document.getElementById("clear");
             const speakBtn = document.getElementById("speak");
+            const reciteBtn = document.getElementById("reciteAll");
             
             let voices = [];
             let currentVoiceIndex = 0;
 
-            function populateVoiceList() {
-                voices = synth.getVoices();
+            // Generate Keyboard
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+            alphabet.forEach(letter => {
+                const btn = document.createElement('button');
+                btn.textContent = letter;
+                btn.setAttribute('aria-label', `Letter ${letter}`);
+                keyboard.appendChild(btn);
+            });
+
+            function populateVoices() {
+                voices = synth.getVoices().filter(v => v.lang.includes('en'));
                 voiceSelect.innerHTML = '';
-                
-                for(let i = 0; i < voices.length; i++) {
-                    const option = document.createElement('option');
-                    option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
-                    if(voices[i].default) {
-                        option.textContent += ' -- DEFAULT';
-                    }
-                    option.setAttribute('data-lang', voices[i].lang);
-                    option.setAttribute('data-name', voices[i].name);
-                    voiceSelect.appendChild(option);
-                }
-                
-                if (voices.length > 0) {
-                    voiceSelect.selectedIndex = 0;
-                }
+                voices.forEach((voice, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = voice.name;
+                    voiceSelect.appendChild(opt);
+                });
             }
 
-            function getSelectedVoice() {
-                const selectedOption = voiceSelect.selectedOptions[0];
-                if (!selectedOption) return null;
-                
-                const selectedName = selectedOption.getAttribute('data-name');
-                return voices.find(voice => voice.name === selectedName) || voices[0];
-            }
-
-            function speakText(text) {
+            function playSound(text) {
                 if (!text) return;
-                
                 synth.cancel();
-                const utterThis = new SpeechSynthesisUtterance(text);
-                utterThis.voice = getSelectedVoice();
-                utterThis.pitch = parseFloat(pitch.value);
-                utterThis.rate = parseFloat(rate.value);
-                synth.speak(utterThis);
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.voice = voices[currentVoiceIndex] || null;
+                utterance.pitch = parseFloat(pitch.value);
+                utterance.rate = parseFloat(rate.value);
+                synth.speak(utterance);
             }
 
-            keyboard.addEventListener('click', (evt) => {
-                if (evt.target.tagName === 'BUTTON') {
-                    const char = evt.target.textContent;
-                    evt.target.classList.add('pressed');
-                    setTimeout(() => evt.target.classList.remove('pressed'), 300);
-                    
-                    speakText(char);
-                    inputTxt.value += char;
-                }
+            // Keyboard interaction
+            keyboard.addEventListener('click', (e) => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+
+                const char = btn.textContent;
+                btn.classList.add('pressed');
+                setTimeout(() => btn.classList.remove('pressed'), 200);
+                
+                display.value += char;
+                playSound(char);
+                
+                // Scroll display to end if it overflows
+                display.scrollLeft = display.scrollWidth;
             });
 
-            nextVoiceButton.addEventListener('click', (evt) => {
-                evt.preventDefault();
+            // Voice cycling
+            nextVoiceBtn.addEventListener('click', () => {
+                if (voices.length === 0) return;
                 currentVoiceIndex = (currentVoiceIndex + 1) % voices.length;
-                voiceSelect.selectedIndex = currentVoiceIndex;
-                
-                const sampleText = inputTxt.value || 'Hello';
-                speakText(sampleText);
+                const vName = voices[currentVoiceIndex].name.split(' ')[0];
+                nextVoiceBtn.innerHTML = `${vName} <i class="fas fa-sync-alt"></i>`;
+                playSound("Hello");
             });
 
-            clearBtn.addEventListener('click', (evt) => {
-                evt.preventDefault();
-                inputTxt.value = '';
+            clearBtn.addEventListener('click', () => {
+                display.value = '';
             });
 
-            speakBtn.addEventListener('click', (evt) => {
-                evt.preventDefault();
-                speakText(inputTxt.value);
+            speakBtn.addEventListener('click', () => {
+                playSound(display.value || "Type something!");
             });
-            
-            const reciteAllBtn = document.getElementById("reciteAll");
-            reciteAllBtn.addEventListener('click', (evt) => {
-                evt.preventDefault();
-                const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                synth.cancel();
+
+            // ABC Song logic
+            let isReciting = false;
+            reciteBtn.addEventListener('click', () => {
+                if (isReciting) {
+                    synth.cancel();
+                    isReciting = false;
+                    return;
+                }
                 
-                let index = 0;
-                const speakNextLetter = () => {
-                    if (index < alphabet.length) {
-                        const letter = alphabet[index];
-                        const utterThis = new SpeechSynthesisUtterance(letter);
-                        utterThis.voice = getSelectedVoice();
-                        utterThis.pitch = parseFloat(pitch.value);
-                        utterThis.rate = parseFloat(rate.value);
+                isReciting = true;
+                let i = 0;
+                
+                function next() {
+                    if (i < alphabet.length && isReciting) {
+                        const letter = alphabet[i];
+                        const utt = new SpeechSynthesisUtterance(letter);
+                        utt.voice = voices[currentVoiceIndex];
+                        utt.pitch = parseFloat(pitch.value);
+                        utt.rate = parseFloat(rate.value);
                         
-                        utterThis.onend = () => {
-                            index++;
-                            setTimeout(speakNextLetter, 200);
+                        // Visual feedback
+                        const btns = keyboard.querySelectorAll('button');
+                        btns[i].classList.add('pressed', 'anim-bounce');
+                        setTimeout(() => btns[i-1]?.classList.remove('pressed', 'anim-bounce'), 0);
+                        
+                        utt.onend = () => {
+                            btns[i].classList.remove('pressed', 'anim-bounce');
+                            i++;
+                            setTimeout(next, 100);
                         };
                         
-                        synth.speak(utterThis);
-                        
-                        const buttons = keyboard.querySelectorAll('button');
-                        buttons.forEach(btn => {
-                            if (btn.textContent === letter) {
-                                btn.classList.add('pressed');
-                                setTimeout(() => btn.classList.remove('pressed'), 300);
-                            }
-                        });
+                        synth.speak(utt);
+                    } else {
+                        isReciting = false;
                     }
-                };
-                
-                speakNextLetter();
+                }
+                next();
             });
 
-            populateVoiceList();
+            // Init voices
+            populateVoices();
             if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = populateVoiceList;
+                speechSynthesis.onvoiceschanged = populateVoices;
             }
+
+            // Prevent zoom on double tap for iOS
+            document.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 1) e.preventDefault();
+            }, { passive: false });
         });
     </script>
 </body>
