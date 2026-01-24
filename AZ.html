@@ -3,237 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Learn Alphabets & Phonics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         html, body {
             height: 100%;
-            font-family: sans-serif;
-        }
-        body {
             margin: 0;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        div{
-            padding: 5px;
-        }
-        table { margin: auto; 
+        
+        .container {
             height: 100%;
-        }
-        .container{
-            height: 100%;
-            padding: 0;
-            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
-        .card{
-            background-color: aqua;
-            width: 400px;
-            height: 400px;
-            border-radius: 2;
-            border: 1px;
-            border-style: solid;
-            text-align: center;
-            display:table;
+        
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            animation: slideIn 0.5s ease-out;
         }
-        .txt{
-            text-align: center;
-            text-emphasis: bold;
-            font-size: 24pt;
-            width: 98%;
-        }
-        button{
-            font-size: 18pt;
-            height: 32px;
-        }
-        @media (pointer: coarse){
-            #keyboard button{
-                padding: 0.7em;
-                height: 46px;
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-        #nextVoice{
-            border: 0;
-            background: none;
-            box-shadow: none;
-            border-radius: 0px;
-            width: 100%;
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        label{
+        
+        .header h1 {
+            color: #667eea;
+            margin: 0;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .display-area {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .txt {
+            font-size: 48px;
             font-weight: bold;
+            color: white;
+            text-align: center;
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 4px;
+        }
+        
+        .txt:focus {
+            outline: none;
+        }
+        
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .keyboard button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .keyboard button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .keyboard button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .keyboard button.pressed {
+            animation: bounce 0.3s ease;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .controls {
+            background: #f7f7f7;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .control-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .control-row label {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 80px;
+            font-size: 16px;
+        }
+        
+        .control-row input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .control-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .control-row input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: none;
+        }
+        
+        .voice-button {
+            flex: 1;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .voice-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .action-buttons button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .action-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .action-buttons button:active {
+            transform: scale(0.98);
+        }
+        
+        #clear {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        #reciteAll {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        select {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+            
+            .txt {
+                font-size: 36px;
+            }
+            
+            .keyboard button {
+                font-size: 20px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <table border="1px">
-                <tr>
-                    <td colspan=2>
-                        <input type="text" class="txt" readonly>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <div id="keyboard">
-                            <button>A</button>
-                            <button>B</button>
-                            <button>C</button>
-                            <button>D</button>
-                            <button>E</button>
-                            <button>F</button>
-                            <button>G</button>
-                            <button>H</button>
-                            <button>I</button>
-                            <button>J</button>
-                            <br>
-                            <button>K</button>
-                            <button>L</button>
-                            <button>M</button>
-                            <button>N</button>
-                            <button>M</button>
-                            <button>O</button>
-                            <button>P</button>
-                            <button>Q</button>
-                            <button>R</button>
-                            <br>
-                            <button>S</button>
-                            <button>T</button>
-                            <button>U</button>
-                            <button>V</button>
-                            <button>W</button>
-                            <button>X</button>
-                            <button>Y</button>
-                            <button>Z</button>
-                            <button>&nbsp;</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="rate">RATE</label>
-                    </td>
-                    <td>
-                        <input type="range" min="0.1" max="4" value="0.6" step="0.1" id="rate">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="pitch">PITCH</label>
-                    </td>
-                    <td>
-                        <input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="voices">VOICE</label>
-                    </td>
-                    <td>
-                        <button id="nextVoice">
-                            <i class="fa fa-user"></i> <i class="fa fa-volume-up"></i>
-                        </button>
-                        <select id="voices" style="max-width: 340px;" hidden>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <button id="clear">CLEAR <i class="fa fa-trash"></i></button>
-                        <button id="speak">SPEAK <i class="fa fa-volume-up"></i></button>
-                    </td>
-                </tr>
-            </table>
+            <div class="header">
+                <h1>🎨 Learn Alphabets & Phonics! 🎨</h1>
+            </div>
+            
+            <div class="display-area">
+                <input type="text" class="txt" readonly placeholder="Click letters!">
+            </div>
+            
+            <div class="keyboard" id="keyboard">
+                <button>A</button>
+                <button>B</button>
+                <button>C</button>
+                <button>D</button>
+                <button>E</button>
+                <button>F</button>
+                <button>G</button>
+                <button>H</button>
+                <button>I</button>
+                <button>J</button>
+                <button>K</button>
+                <button>L</button>
+                <button>M</button>
+                <button>N</button>
+                <button>O</button>
+                <button>P</button>
+                <button>Q</button>
+                <button>R</button>
+                <button>S</button>
+                <button>T</button>
+                <button>U</button>
+                <button>V</button>
+                <button>W</button>
+                <button>X</button>
+                <button>Y</button>
+                <button>Z</button>
+            </div>
+            
+            <div class="controls">
+                <div class="control-row">
+                    <label for="rate"><i class="fas fa-tachometer-alt"></i> Speed</label>
+                    <input type="range" min="0.3" max="2" value="0.8" step="0.1" id="rate">
+                </div>
+                <div class="control-row">
+                    <label for="pitch"><i class="fas fa-music"></i> Pitch</label>
+                    <input type="range" min="0.5" max="2" value="1.2" step="0.1" id="pitch">
+                </div>
+                <div class="control-row">
+                    <label><i class="fas fa-user"></i> Voice</label>
+                    <button class="voice-button" id="nextVoice">
+                        Change Voice <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="clear">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+                <button id="reciteAll">
+                    <i class="fas fa-list-ol"></i> ABC Song
+                </button>
+                <button id="speak">
+                    <i class="fas fa-volume-up"></i> Speak
+                </button>
+            </div>
+            
+            <select id="voices"></select>
         </div>
     </div>
+    
     <script>
-        document.addEventListener("DOMContentLoaded", (event) => {
-            var synth = window.speechSynthesis;
-            var inputTxt = document.querySelector('.txt');
-            var voiceSelect = document.querySelector('select');
-            var pitch = document.querySelector('#pitch');
-            var rate = document.querySelector('#rate');
-            var voices = [];
-            var utterThis = new SpeechSynthesisUtterance();
-            var nextVoiceButton = document.getElementById("nextVoice");
-            var colorList = ['#cdb522', '#e574aa', '#3e9909', '#abb9ca', '#0e4182', '#FAA987', '#E4D3BB', '#E4EBCC', '#9BD0D1', '#049BA9'];
-            var card = document.getElementsByClassName('card')[0];
-            var speakBtn = document.getElementById('speak');
-
-            nextVoiceButton.onclick = function(evt){
-                evt.preventDefault();
-                voiceSelect.selectedIndex = (voiceSelect.selectedIndex + 1) % voiceSelect.length;
-                // console.log(voiceSelect.selectedOptions[0]);
-                nextVoiceButton.style.backgroundColor = colorList[voiceSelect.selectedIndex%colorList.length];
-                card.style.backgroundColor = colorList[(voiceSelect.selectedIndex+1)%colorList.length];
-                speakBtn.click();
-            }
-
-            document.getElementById("keyboard").onclick = function(evt){
-                evt.preventDefault();
-                var char = evt.target.textContent;
-                utterThis.text = char;
-                utterThis.voice = getSelectedVoice();
-                utterThis.pitch = pitch.value;
-                utterThis.rate = rate.value;
-                synth.speak(utterThis);
-                inputTxt.value += char;
-            }
-
-            function getSelectedVoice(){
-                var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
-                var selectedVoice = null;
-                for(i = 0; i < voices.length ; i++) {
-                    if(voices[i].name === selectedOption) {
-                        selectedVoice = voices[i];
-                        break;
-                    }
-                }
-                return selectedVoice;
-            }
+        document.addEventListener("DOMContentLoaded", () => {
+            const synth = window.speechSynthesis;
+            const inputTxt = document.querySelector('.txt');
+            const voiceSelect = document.querySelector('#voices');
+            const pitch = document.querySelector('#pitch');
+            const rate = document.querySelector('#rate');
+            const nextVoiceButton = document.getElementById("nextVoice");
+            const keyboard = document.getElementById("keyboard");
+            const clearBtn = document.getElementById("clear");
+            const speakBtn = document.getElementById("speak");
+            
+            let voices = [];
+            let currentVoiceIndex = 0;
 
             function populateVoiceList() {
                 voices = synth.getVoices();
-                for(i = 0; i < voices.length ; i++) {
-                    var option = document.createElement('option');
+                voiceSelect.innerHTML = '';
+                
+                for(let i = 0; i < voices.length; i++) {
+                    const option = document.createElement('option');
                     option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
                     if(voices[i].default) {
-                    option.textContent += ' -- DEFAULT';
+                        option.textContent += ' -- DEFAULT';
                     }
                     option.setAttribute('data-lang', voices[i].lang);
                     option.setAttribute('data-name', voices[i].name);
                     voiceSelect.appendChild(option);
                 }
+                
+                if (voices.length > 0) {
+                    voiceSelect.selectedIndex = 0;
+                }
             }
 
-            document.getElementById("clear").onclick = function(evt){
-                evt.preventDefault();
-                inputTxt.value = "";
-                // pitch.value = 1.0;
-                // rate.value = 1.0;
-                // voiceSelect.options.length = 0;
-                // populateVoiceList();
+            function getSelectedVoice() {
+                const selectedOption = voiceSelect.selectedOptions[0];
+                if (!selectedOption) return null;
+                
+                const selectedName = selectedOption.getAttribute('data-name');
+                return voices.find(voice => voice.name === selectedName) || voices[0];
             }
 
-            document.getElementById("speak").onclick = function(evt){
-                evt.preventDefault();
-                // var utterThis = new SpeechSynthesisUtterance(inputTxt.value);
-                utterThis.text = inputTxt.value;
+            function speakText(text) {
+                if (!text) return;
+                
+                synth.cancel();
+                const utterThis = new SpeechSynthesisUtterance(text);
                 utterThis.voice = getSelectedVoice();
-                utterThis.pitch = pitch.value;
-                utterThis.rate = rate.value;
+                utterThis.pitch = parseFloat(pitch.value);
+                utterThis.rate = parseFloat(rate.value);
                 synth.speak(utterThis);
             }
 
+            keyboard.addEventListener('click', (evt) => {
+                if (evt.target.tagName === 'BUTTON') {
+                    const char = evt.target.textContent;
+                    evt.target.classList.add('pressed');
+                    setTimeout(() => evt.target.classList.remove('pressed'), 300);
+                    
+                    speakText(char);
+                    inputTxt.value += char;
+                }
+            });
+
+            nextVoiceButton.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                currentVoiceIndex = (currentVoiceIndex + 1) % voices.length;
+                voiceSelect.selectedIndex = currentVoiceIndex;
+                
+                const sampleText = inputTxt.value || 'Hello';
+                speakText(sampleText);
+            });
+
+            clearBtn.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                inputTxt.value = '';
+            });
+
+            speakBtn.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                speakText(inputTxt.value);
+            });
+            
+            const reciteAllBtn = document.getElementById("reciteAll");
+            reciteAllBtn.addEventListener('click', (evt) => {
+                evt.preventDefault();
+                const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                synth.cancel();
+                
+                let index = 0;
+                const speakNextLetter = () => {
+                    if (index < alphabet.length) {
+                        const letter = alphabet[index];
+                        const utterThis = new SpeechSynthesisUtterance(letter);
+                        utterThis.voice = getSelectedVoice();
+                        utterThis.pitch = parseFloat(pitch.value);
+                        utterThis.rate = parseFloat(rate.value);
+                        
+                        utterThis.onend = () => {
+                            index++;
+                            setTimeout(speakNextLetter, 200);
+                        };
+                        
+                        synth.speak(utterThis);
+                        
+                        const buttons = keyboard.querySelectorAll('button');
+                        buttons.forEach(btn => {
+                            if (btn.textContent === letter) {
+                                btn.classList.add('pressed');
+                                setTimeout(() => btn.classList.remove('pressed'), 300);
+                            }
+                        });
+                    }
+                };
+                
+                speakNextLetter();
+            });
+
             populateVoiceList();
-            nextVoiceButton.style.backgroundColor = colorList[voiceSelect.selectedIndex%colorList.length];
-            card.style.backgroundColor = colorList[(voiceSelect.selectedIndex+1)%colorList.length];
             if (speechSynthesis.onvoiceschanged !== undefined) {
                 speechSynthesis.onvoiceschanged = populateVoiceList;
             }
         });
-        
     </script>
 </body>
 </html>
